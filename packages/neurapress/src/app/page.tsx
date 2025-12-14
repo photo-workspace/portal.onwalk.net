@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui'
-import { MainNav } from '../components/nav/MainNav'
-import { Logo } from '../components/icons/Logo'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { MainNav } from '@/components/nav/MainNav'
+import { Logo } from '@/components/icons/Logo'
 import {
   FileText,
   Smartphone,

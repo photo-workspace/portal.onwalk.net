@@ -1,9 +1,8 @@
 'use client'
 
 import { useCallback } from 'react'
-
-import { initializeMermaid } from '../../../lib/markdown/mermaid-utils'
-import { useToast } from '../../ui'
+import { useToast } from '@/components/ui/use-toast'
+import { initializeMermaid } from '@/lib/markdown/mermaid-utils'
 
 export const useCopy = () => {
   const { toast } = useToast()

@@ -2,10 +2,9 @@
 
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
+import { Logo } from '@/components/icons/Logo'
 import { Loader2 } from 'lucide-react'
-
-import { Logo } from '../../components/icons/Logo'
-import { AdBanner } from '../../components/ui'
+import { AdBanner } from '@/components/ui/AdBanner'
 
 const LoadingLogo = () => (
   <div className="h-full bg-background flex items-center justify-center">
@@ -25,7 +24,7 @@ const LoadingLogo = () => (
 )
 
 // Dynamically import WechatEditor with no SSR
-const WechatEditor = dynamic(() => import('../../components/editor/WechatEditor'), {
+const WechatEditor = dynamic(() => import('@/components/editor/WechatEditor'), {
   ssr: false,
   loading: () => (
     <LoadingLogo />

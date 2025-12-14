@@ -1,8 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-
-import { TooltipProvider } from '../../ui'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { XiaohongshuToolbar } from './components/XiaohongshuToolbar'
 import { XiaohongshuEditor } from './components/XiaohongshuEditor'
 import { XiaohongshuPreview } from './components/XiaohongshuPreview'
