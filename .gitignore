@@ -12,6 +12,7 @@ node_modules/
 # Next.js build output
 .next/
 out/
+public/_build/
 public/dl-index/
 
 # Contentlayer cache

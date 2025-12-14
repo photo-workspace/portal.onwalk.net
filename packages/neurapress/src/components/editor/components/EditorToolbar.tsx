@@ -1,26 +1,23 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { Copy, Plus, Save, Smartphone, Settings, Github, Trash2 } from 'lucide-react'
-
-import { codeThemes, type CodeThemeId } from '../../../config/code-themes'
-import { useLocalStorage } from '../../../hooks/use-local-storage'
-import { cn } from '../../../lib/utils'
-import { type RendererOptions } from '../../../lib/markdown'
-import { ArticleList } from '../../ArticleList'
-import { Logo } from '../../icons/Logo'
-import { ThemeToggle } from '../../theme/ThemeToggle'
-import {
-  Button,
-  ToastAction,
-  useToast,
-} from '../../ui'
-import { TemplateManager } from '../../template/TemplateManager'
+import { cn } from '@/lib/utils'
 import { WechatStylePicker } from '../../template/WechatStylePicker'
-import { CodeThemeSelector } from '../CodeThemeSelector'
+import { TemplateManager } from '../../template/TemplateManager'
 import { StyleConfigDialog } from '../StyleConfigDialog'
+import { ArticleList } from '@/components/ArticleList'
 import { type Article } from '../constants'
+import { type RendererOptions } from '@/lib/markdown'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { Logo } from '@/components/icons/Logo'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import { CodeThemeSelector } from '../CodeThemeSelector'
+import { useLocalStorage } from '@/hooks/use-local-storage'
+import { codeThemes, type CodeThemeId } from '@/config/code-themes'
 
 interface EditorToolbarProps {
   value: string

@@ -1,6 +1,7 @@
 import React from 'react'
-
-import { Button, Separator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../ui'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip'
+import { Separator } from '@/components/ui/separator'
 import {
   Bold,
   Italic,

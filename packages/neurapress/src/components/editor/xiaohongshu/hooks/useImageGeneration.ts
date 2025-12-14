@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
 import html2canvas from 'html2canvas'
 import JSZip from 'jszip'
-
-import { useToast } from '../../../ui'
+import { useToast } from '@/components/ui/use-toast'
 import type { PageMode } from '../constants'
 
 export function useImageGeneration() {

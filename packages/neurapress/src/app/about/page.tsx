@@ -1,13 +1,7 @@
-import { MainNav } from '../../components/nav/MainNav'
-import { Logo } from '../../components/icons/Logo'
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../components/ui'
+import { MainNav } from '@/components/nav/MainNav'
+import { Logo } from '@/components/icons/Logo'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { 
   Heart,

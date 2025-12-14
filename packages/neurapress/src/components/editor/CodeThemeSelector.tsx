@@ -1,7 +1,8 @@
 'use client'
 
-import { codeThemes, type CodeThemeId } from '../../config/code-themes'
-import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui'
+import { codeThemes, type CodeThemeId } from '@/config/code-themes'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 interface CodeThemeSelectorProps {
   value: CodeThemeId

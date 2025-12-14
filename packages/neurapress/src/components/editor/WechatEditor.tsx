@@ -1,36 +1,30 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { Copy } from 'lucide-react'
-
-import { codeThemes, type CodeThemeId } from '../../config/code-themes'
-import { templates } from '../../config/wechat-templates'
-import { useLocalStorage } from '../../hooks/use-local-storage'
-import { cn } from '../../lib/utils'
-import { getExampleContent } from '../../lib/utils/loadExampleContent'
-import { type RendererOptions } from '../../lib/markdown'
-import '../../styles/code-themes.css'
-import {
-  Button,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  ToastAction,
-  useToast,
-} from '../ui'
+import { useToast } from '@/components/ui/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import { type RendererOptions } from '@/lib/markdown'
 import { useAutoSave } from './hooks/useAutoSave'
 import { EditorToolbar } from './components/EditorToolbar'
 import { EditorPreview } from './components/EditorPreview'
 import { MarkdownToolbar } from './components/MarkdownToolbar'
 import { type PreviewSize } from './constants'
+import { useLocalStorage } from '@/hooks/use-local-storage'
+import { codeThemes, type CodeThemeId } from '@/config/code-themes'
+import '@/styles/code-themes.css'
+import { templates } from '@/config/wechat-templates'
+import { cn } from '@/lib/utils'
 import { usePreviewContent } from './hooks/usePreviewContent'
 import { useEditorKeyboard } from './hooks/useEditorKeyboard'
 import { useScrollSync } from './hooks/useScrollSync'
 import { useWordStats } from './hooks/useWordStats'
 import { useCopy } from './hooks/useCopy'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Copy } from 'lucide-react'
 import { MobileEditor } from './components/MobileEditor'
 import { DesktopEditor } from './components/DesktopEditor'
+import { getExampleContent } from '@/lib/utils/loadExampleContent'
 
 export default function WechatEditor() {
   const { toast } = useToast()

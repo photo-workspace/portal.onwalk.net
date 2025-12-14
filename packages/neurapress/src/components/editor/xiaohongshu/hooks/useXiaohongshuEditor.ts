@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { marked } from 'marked'
-
-import { useToast } from '../../../ui'
+import { useToast } from '@/components/ui/use-toast'
 import { defaultMarkdown, STORAGE_KEYS, type XiaohongshuTemplateId } from '../constants'
 
 export function useXiaohongshuEditor() {
