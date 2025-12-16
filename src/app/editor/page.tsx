@@ -1,8 +1,5 @@
-'use client'
-
-import EditorShell from '../../dashboard/apps/cms-editor/EditorShell'
-import { localDraftStore } from '../../dashboard/apps/cms-editor/storage/local'
+import { redirect } from 'next/navigation'
 
 export default function EditorPage() {
-  return <EditorShell store={localDraftStore} mode="public" />
+  redirect('https://write.svc.plus/')
 }

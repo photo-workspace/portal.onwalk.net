@@ -278,7 +278,7 @@ export default function Navbar() {
   const editorLink = {
     key: 'editor',
     label: labels.editor,
-    href: '/editor',
+    href: 'https://write.svc.plus/',
   }
 
   const openSourceProjects = [

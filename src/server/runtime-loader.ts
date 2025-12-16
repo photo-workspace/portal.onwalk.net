@@ -9,7 +9,6 @@ import yaml from 'js-yaml'
 const configDir = path.join(process.cwd(), 'src', 'config')
 
 const FORBIDDEN_IMPORT_CONTEXTS = [
-  `${path.sep}src${path.sep}modules${path.sep}markdown-editor${path.sep}`,
   `${path.sep}src${path.sep}components${path.sep}ui${path.sep}`,
   'tiptap',
   'mermaid',
