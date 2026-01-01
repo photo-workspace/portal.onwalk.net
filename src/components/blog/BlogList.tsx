@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 
 import BrandCTA from '@components/BrandCTA'
 import SearchComponent from '@components/search'
-import type { BlogPost } from '@lib/blogContent'
+import type { BlogPostSummary } from '@lib/blogContent'
 
 const CATEGORY_TABS: { key: string; label: string }[] = [
   { key: 'infra-cloud', label: 'Infra & Cloud' },
@@ -39,10 +39,10 @@ function formatDate(dateStr: string | undefined, language: 'zh' | 'en'): string 
 }
 
 interface BlogListProps {
-  posts: BlogPost[]
+  posts: BlogPostSummary[]
 }
 
-function buildCategoryCounts(posts: BlogPost[]) {
+function buildCategoryCounts(posts: BlogPostSummary[]) {
   return posts.reduce<Record<string, number>>((acc, post) => {
     const categoryKey = post.category?.key
     if (!categoryKey) return acc
@@ -51,7 +51,7 @@ function buildCategoryCounts(posts: BlogPost[]) {
   }, {})
 }
 
-function detectLanguage(posts: BlogPost[]): 'zh' | 'en' {
+function detectLanguage(posts: BlogPostSummary[]): 'zh' | 'en' {
   for (const post of posts) {
     if (/[\u4e00-\u9fff]/.test(`${post.title} ${post.excerpt}`)) {
       return 'zh'

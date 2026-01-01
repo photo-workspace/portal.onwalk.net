@@ -17,6 +17,8 @@ export interface BlogPost {
   }
 }
 
+export type BlogPostSummary = Omit<BlogPost, 'content'>
+
 const BLOG_EXTENSIONS = ['.md', '.mdx']
 
 const CATEGORY_MAP: { key: string; label: string; match: (segments: string[]) => boolean }[] = [
