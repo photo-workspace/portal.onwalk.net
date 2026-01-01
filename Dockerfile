@@ -26,8 +26,6 @@ RUN apt-get update \
     && corepack prepare yarn@4.12.0 --activate
 
 COPY . .
-RUN rm -rf src/content/blog/* \
-    && mkdir -p src/content/blog
 RUN find . -name "package-lock.json" -delete
 RUN yarn install --immutable && \
     yarn prebuild && \

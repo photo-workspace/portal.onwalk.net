@@ -6,17 +6,7 @@ import { useSearchParams } from 'next/navigation'
 
 import BrandCTA from '@components/BrandCTA'
 import SearchComponent from '@components/search'
-import type { BlogPostSummary } from '@lib/blogContent'
-
-const CATEGORY_TABS: { key: string; label: string }[] = [
-  { key: 'infra-cloud', label: 'Infra & Cloud' },
-  { key: 'observability', label: 'Observability' },
-  { key: 'identity', label: 'ID & Security' },
-  { key: 'iac-devops', label: 'IaC & DevOps' },
-  { key: 'data-ai', label: 'Data & AI' },
-  { key: 'insight', label: '资讯' },
-  { key: 'essays', label: '随笔&观察' },
-]
+import type { BlogCategory, BlogPostSummary } from '@lib/blogContent'
 
 function formatDate(dateStr: string | undefined, language: 'zh' | 'en'): string {
   if (!dateStr) return ''
@@ -40,6 +30,7 @@ function formatDate(dateStr: string | undefined, language: 'zh' | 'en'): string 
 
 interface BlogListProps {
   posts: BlogPostSummary[]
+  categories: BlogCategory[]
 }
 
 function buildCategoryCounts(posts: BlogPostSummary[]) {
@@ -60,10 +51,21 @@ function detectLanguage(posts: BlogPostSummary[]): 'zh' | 'en' {
   return 'en'
 }
 
-export default function BlogList({ posts }: BlogListProps) {
+export default function BlogList({ posts, categories }: BlogListProps) {
   const searchParams = useSearchParams()
   const selectedCategory = searchParams.get('category')
   const page = searchParams.get('page')
+
+  const categoryTabs = useMemo(() => {
+    const categoriesFromPosts = posts
+      .map((post) => post.category)
+      .filter((category): category is NonNullable<BlogPostSummary['category']> => Boolean(category))
+      .map((category) => ({ key: category.key, label: category.label ?? category.key }))
+
+    return [...categories, ...categoriesFromPosts].filter(
+      (category, index, self) => self.findIndex((item) => item.key === category.key) === index,
+    )
+  }, [categories, posts])
 
   const categoryCounts = useMemo(() => buildCategoryCounts(posts), [posts])
   const filteredPosts = useMemo(() => {
@@ -109,7 +111,7 @@ export default function BlogList({ posts }: BlogListProps) {
           </div>
 
           <div className="mb-10 flex flex-wrap items-center gap-3">
-            {CATEGORY_TABS.map((tab) => {
+            {categoryTabs.map((tab) => {
               const isActive = tab.key === selectedCategory
               const labelWithCount = categoryCounts[tab.key]
 

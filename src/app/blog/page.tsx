@@ -5,8 +5,8 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 
 import BlogList from '@components/blog/BlogList'
-import type { BlogPostSummary } from '@lib/blogContent'
-import { getBlogPosts } from '@lib/blogContent'
+import type { BlogCategory, BlogPostSummary } from '@lib/blogContent'
+import { getBlogCategories, getBlogPosts } from '@lib/blogContent'
 
 export const metadata: Metadata = {
   title: 'Blog | Cloud-Neutral',
@@ -15,10 +15,11 @@ export const metadata: Metadata = {
 
 export default async function BlogPage() {
   const posts = await getBlogPosts()
+  const categories: BlogCategory[] = await getBlogCategories()
   const postsWithoutContent: BlogPostSummary[] = posts.map(({ content: _content, ...post }) => post)
   return (
     <Suspense fallback={<div className="p-6 text-center">Loading blog content...</div>}>
-      <BlogList posts={postsWithoutContent} />
+      <BlogList posts={postsWithoutContent} categories={categories} />
     </Suspense>
   )
 }

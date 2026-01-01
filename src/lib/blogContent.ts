@@ -1,3 +1,4 @@
+import fs from 'fs/promises'
 import { cache } from 'react'
 
 import { readMdxDirectory, readMdxFile } from './mdx'
@@ -17,6 +18,11 @@ export interface BlogPost {
   }
 }
 
+export interface BlogCategory {
+  key: string
+  label: string
+}
+
 export type BlogPostSummary = Omit<BlogPost, 'content'>
 
 const BLOG_EXTENSIONS = ['.md', '.mdx']
@@ -27,6 +33,7 @@ const CATEGORY_MAP: { key: string; label: string; match: (segments: string[]) =>
   { key: 'identity', label: 'ID & Security', match: (segments) => segments[0] === '01-id-security' },
   { key: 'iac-devops', label: 'IaC & DevOps', match: (segments) => segments[0] === '02-iac-devops' },
   { key: 'data-ai', label: 'Data & AI', match: (segments) => segments[0] === '05-data-ai' },
+  { key: 'workshops', label: 'Workshops', match: (segments) => segments[0] === '06-workshops' },
   {
     key: 'insight',
     label: '资讯',
@@ -39,6 +46,16 @@ const CATEGORY_MAP: { key: string; label: string; match: (segments: string[]) =>
   },
 ]
 
+const CATEGORY_DIRECTORIES: Record<string, { key: string; label: string }> = {
+  '04-infra-platform': { key: 'infra-cloud', label: 'Infra & Cloud' },
+  '03-observability': { key: 'observability', label: 'Observability' },
+  '01-id-security': { key: 'identity', label: 'ID & Security' },
+  '02-iac-devops': { key: 'iac-devops', label: 'IaC & DevOps' },
+  '05-data-ai': { key: 'data-ai', label: 'Data & AI' },
+  '00-global': { key: 'insight', label: '资讯' },
+  '06-workshops': { key: 'workshops', label: 'Workshops' },
+}
+
 const readBlogFiles = cache(async () =>
   readMdxDirectory('', {
     baseDir: resolveBlogContentRoot(),
@@ -46,6 +63,36 @@ const readBlogFiles = cache(async () =>
     extensions: BLOG_EXTENSIONS,
   }),
 )
+
+export const getBlogCategories = cache(async (): Promise<BlogCategory[]> => {
+  try {
+    const contentRoot = resolveBlogContentRoot()
+    const entries = await fs.readdir(contentRoot, { withFileTypes: true })
+    const directories = entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+
+    return directories
+      .sort()
+      .map((dirName) => {
+        const mapped = CATEGORY_DIRECTORIES[dirName]
+        if (mapped) return mapped
+
+        const withoutPrefix = dirName.replace(/^\d+-/, '')
+        const normalized = withoutPrefix
+          .split('-')
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ')
+
+        return { key: dirName, label: normalized || dirName }
+      })
+      .filter((category, index, self) => self.findIndex((item) => item.key === category.key) === index)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      throw error
+    }
+    return []
+  }
+})
 
 function resolveCategory(slug: string): { key: string; label: string } | undefined {
   const segments = slug.split('/')
