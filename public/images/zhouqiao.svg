@@ -1,0 +1,8 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#0f172a" />
+  <rect y="420" width="1200" height="380" fill="#1e293b" />
+  <circle cx="210" cy="220" r="140" fill="#38bdf8" opacity="0.35" />
+  <rect x="160" y="360" width="880" height="40" fill="#f8fafc" opacity="0.2" />
+  <rect x="200" y="390" width="800" height="20" fill="#f8fafc" opacity="0.1" />
+  <text x="80" y="720" fill="#e2e8f0" font-size="48" font-family="sans-serif">Zhouqiao</text>
+</svg>

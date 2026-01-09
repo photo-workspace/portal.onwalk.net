@@ -1,0 +1,6 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#0b1120" />
+  <path d="M0 560 L260 360 L520 520 L760 300 L1200 520 V800 H0 Z" fill="#1e293b" />
+  <path d="M0 620 L220 460 L520 600 L760 400 L1200 600 V800 H0 Z" fill="#334155" opacity="0.8" />
+  <text x="80" y="720" fill="#e2e8f0" font-size="48" font-family="sans-serif">Tracks</text>
+</svg>

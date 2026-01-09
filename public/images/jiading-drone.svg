@@ -1,0 +1,7 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#111827" />
+  <rect y="480" width="1200" height="320" fill="#1f2937" />
+  <circle cx="960" cy="200" r="160" fill="#f59e0b" opacity="0.35" />
+  <path d="M120 520 L400 360 L760 420 L1080 260" stroke="#e5e7eb" stroke-width="6" opacity="0.25" fill="none" />
+  <text x="80" y="720" fill="#e5e7eb" font-size="48" font-family="sans-serif">Jiading Drone</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#0f172a" />
+  <rect y="480" width="1200" height="320" fill="#1e293b" />
+  <rect x="120" y="260" width="140" height="340" fill="#475569" />
+  <rect x="320" y="200" width="180" height="400" fill="#64748b" />
+  <rect x="560" y="240" width="160" height="360" fill="#475569" />
+  <rect x="760" y="180" width="200" height="420" fill="#64748b" />
+  <circle cx="980" cy="180" r="80" fill="#38bdf8" opacity="0.3" />
+  <text x="80" y="720" fill="#e2e8f0" font-size="48" font-family="sans-serif">City Night</text>
+</svg>
