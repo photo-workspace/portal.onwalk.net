@@ -56,24 +56,6 @@ async function generateHomepageContent() {
   return content
 }
 
-async function generateProductContent(product: 'xstream' | 'xcloudflow' | 'xscopehub') {
-  const languages: Language[] = ['zh', 'en']
-  const content: Record<Language, any> = {} as any
-
-  for (const lang of languages) {
-    try {
-      const heroPath = path.join(CONTENT_ROOT, 'product', product, lang, 'hero.md')
-      const raw = await fs.readFile(heroPath, 'utf-8')
-      const { metadata } = parseFrontMatter(raw)
-      content[lang] = metadata
-    } catch (error) {
-      console.error(`Failed to read ${product} content for ${lang}:`, error)
-    }
-  }
-
-  return content
-}
-
 async function main() {
   // Create output directory
   await fs.mkdir(OUTPUT_ROOT, { recursive: true })
@@ -85,17 +67,6 @@ async function main() {
     path.join(OUTPUT_ROOT, 'homepage.json'),
     JSON.stringify(homepageContent, null, 2)
   )
-
-  // Generate product content
-  const products = ['xstream', 'xcloudflow', 'xscopehub'] as const
-  for (const product of products) {
-    console.log(`Generating ${product} content...`)
-    const productContent = await generateProductContent(product)
-    await fs.writeFile(
-      path.join(OUTPUT_ROOT, `${product}.json`),
-      JSON.stringify(productContent, null, 2)
-    )
-  }
 
   console.log('Content generation complete!')
 }
