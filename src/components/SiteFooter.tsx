@@ -1,7 +1,17 @@
 import { MessageCircle, Sparkles, Twitter } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 export default function SiteFooter() {
-  const socials = [
+  type SocialItem = {
+    label: string
+    icon: LucideIcon
+    href?: string
+    qrImage?: string
+    qrAlt?: string
+    qrHint?: string
+  }
+
+  const socials: SocialItem[] = [
     { label: 'X (Twitter)', href: 'https://x.com/', icon: Twitter },
     { label: '小红书', href: 'https://www.xiaohongshu.com/', icon: Sparkles },
     {
