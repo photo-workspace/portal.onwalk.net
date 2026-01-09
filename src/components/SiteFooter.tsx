@@ -1,5 +1,9 @@
+'use client'
+
 import { MessageCircle, Sparkles, Twitter } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+
+import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
 
 export default function SiteFooter() {
   type SocialItem = {
@@ -11,15 +15,17 @@ export default function SiteFooter() {
     qrHint?: string
   }
 
+  const copy = useOnwalkCopy()
+
   const socials: SocialItem[] = [
-    { label: 'X (Twitter)', href: 'https://x.com/', icon: Twitter },
-    { label: '小红书', href: 'https://www.xiaohongshu.com/', icon: Sparkles },
+    { label: copy.footer.socials.twitter, href: 'https://x.com/', icon: Twitter },
+    { label: copy.footer.socials.xiaohongshu, href: 'https://www.xiaohongshu.com/', icon: Sparkles },
     {
-      label: '微信',
+      label: copy.footer.socials.wechat,
       icon: MessageCircle,
       qrImage: 'https://dl.svc.plus/images/contact/wechat-official.jpg',
-      qrAlt: '微信二维码',
-      qrHint: '微信扫码关注',
+      qrAlt: copy.footer.socials.wechatQrAlt,
+      qrHint: copy.footer.socials.wechatQrHint,
     },
   ]
 
@@ -63,8 +69,8 @@ export default function SiteFooter() {
           })}
         </div>
         <div className="flex flex-col gap-2 text-sm text-slate-500">
-          <p>行者影像与思想档案 · 影像为入口，文字为结构。</p>
-          <p>影像与文字均来自个人行摄记录，持续更新。</p>
+          <p>{copy.footer.tagline}</p>
+          <p>{copy.footer.description}</p>
         </div>
       </div>
     </footer>

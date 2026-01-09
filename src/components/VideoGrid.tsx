@@ -1,8 +1,11 @@
 'use client'
 
+import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
 import type { ContentItem } from '@/lib/content'
 
 export default function VideoGrid({ items }: { items: ContentItem[] }) {
+  const copy = useOnwalkCopy()
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => (
@@ -19,7 +22,7 @@ export default function VideoGrid({ items }: { items: ContentItem[] }) {
               onMouseLeave={(event) => event.currentTarget.pause()}
             />
           ) : (
-            <div className="flex h-48 items-center justify-center text-sm text-slate-500">暂无视频</div>
+            <div className="flex h-48 items-center justify-center text-sm text-slate-500">{copy.video.empty}</div>
           )}
           <div className="p-4 text-slate-900">
             <p className="text-sm font-semibold">{item.title}</p>

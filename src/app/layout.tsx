@@ -8,7 +8,7 @@ export const metadata = {
   description: 'Unified tools for your cloud native stack',
 }
 
-const htmlAttributes = { lang: 'en' }
+const htmlAttributes = { lang: 'zh' }
 const bodyClassName = 'bg-[var(--color-background)] text-[var(--color-text)]'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

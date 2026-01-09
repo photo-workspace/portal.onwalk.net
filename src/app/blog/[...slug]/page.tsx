@@ -1,12 +1,12 @@
 export const dynamic = 'error'
 export const revalidate = false
 
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
+import BlogBackLink from '@/components/onwalk/BlogBackLink'
 import { getContentBySlug, getContentSlugs } from '@/lib/content'
 import { renderMarkdownContent } from '@/server/render-markdown'
 
@@ -49,9 +49,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
       <main className="mx-auto w-full max-w-3xl px-6 pb-20">
-        <Link href="/blog" className="inline-flex items-center text-xs text-slate-500 hover:text-slate-900">
-          ← 返回行摄笔记
-        </Link>
+        <BlogBackLink />
         <header className="mt-6 space-y-3">
           <h1 className="text-3xl font-semibold">{post.title}</h1>
           {post.date && <p className="text-xs text-slate-500">{post.date}</p>}
