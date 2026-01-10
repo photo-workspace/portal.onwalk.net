@@ -1,14 +1,14 @@
-export const dynamic = 'error'
-export const revalidate = false
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import VideoGrid from '@/components/VideoGrid'
 import PageHeader from '@/components/onwalk/PageHeader'
-import { getContent } from '@/lib/content'
+import { getPublicVideos } from '@/lib/video'
 
 export default async function VideoPage() {
-  const videos = await getContent('video')
+  const videos = await getPublicVideos()
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">

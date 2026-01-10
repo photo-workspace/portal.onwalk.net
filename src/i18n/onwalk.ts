@@ -96,6 +96,9 @@ type OnwalkCopy = {
     title: string
     subtitle: string
     empty: string
+    pageLabel: string
+    prev: string
+    next: string
   }
 }
 
@@ -199,6 +202,9 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       title: '影像剧场',
       subtitle: '通过短片补充照片的呼吸与节奏。',
       empty: '暂无视频',
+      pageLabel: '页码',
+      prev: '上一页',
+      next: '下一页',
     },
   },
   en: {
@@ -300,6 +306,9 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       title: 'Image Theater',
       subtitle: 'Short films add breath and rhythm to the stills.',
       empty: 'No video yet',
+      pageLabel: 'Page',
+      prev: 'Previous',
+      next: 'Next',
     },
   },
 }
