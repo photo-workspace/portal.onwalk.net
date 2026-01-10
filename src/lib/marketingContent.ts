@@ -82,9 +82,9 @@ const HERO_CONTENT: HeroContent = {
   subtitle:
     '将资产管理、访问控制、可观测与自动化工作流整合到一个响应迅速的体验里，帮助团队高效落地治理策略。',
   primaryCtaLabel: '立即体验',
-  primaryCtaHref: '/register',
+  primaryCtaHref: 'https://www.svc.plus',
   secondaryCtaLabel: '产品文档',
-  secondaryCtaHref: '/docs',
+  secondaryCtaHref: 'https://www.svc.plus/docs',
   highlights: [
     '跨集群纳管与多云环境统一治理',
     '以策略为核心的安全与合规编排',
@@ -105,11 +105,11 @@ const HERO_SOLUTIONS: HeroSolution[] = [
     bodyHtml:
       '<p>XCloudFlow 将 Terraform、Pulumi 等主流 IaC 模型统一到一个工作台，为多云环境提供自助式交付与集中治理。</p>',
     primaryCtaLabel: '立刻体验',
-    primaryCtaHref: '/demo?product=xcloudflow',
+    primaryCtaHref: 'https://www.svc.plus/xcloudflow',
     secondaryCtaLabel: '下载链接',
-    secondaryCtaHref: '/download?product=xcloudflow',
+    secondaryCtaHref: 'https://www.svc.plus/xcloudflow/downloads',
     tertiaryCtaLabel: '文档链接',
-    tertiaryCtaHref: '/docs/xcloudflow',
+    tertiaryCtaHref: 'https://www.svc.plus/xcloudflow/docs',
   },
   {
     slug: 'xscopehub',
@@ -120,11 +120,11 @@ const HERO_SOLUTIONS: HeroSolution[] = [
     bodyHtml:
       '<p>XScopeHub 通过语义化检索与时序分析，实现跨环境的可观察性汇聚与智能洞察。</p>',
     primaryCtaLabel: '立刻体验',
-    primaryCtaHref: '/demo?product=xscopehub',
+    primaryCtaHref: 'https://www.svc.plus/xscopehub',
     secondaryCtaLabel: '下载链接',
-    secondaryCtaHref: '/download?product=xscopehub',
+    secondaryCtaHref: 'https://www.svc.plus/xscopehub/downloads',
     tertiaryCtaLabel: '文档链接',
-    tertiaryCtaHref: '/docs/xscopehub',
+    tertiaryCtaHref: 'https://www.svc.plus/xscopehub/docs',
   },
   {
     slug: 'xstream',
@@ -135,11 +135,11 @@ const HERO_SOLUTIONS: HeroSolution[] = [
     bodyHtml:
       '<p>XStream 通过软件定义的网络加速技术，为实时互动、音视频与数据分发提供稳定的全球链路。</p>',
     primaryCtaLabel: '立刻体验',
-    primaryCtaHref: '/demo?product=xstream',
+    primaryCtaHref: 'https://www.svc.plus/xstream',
     secondaryCtaLabel: '下载链接',
-    secondaryCtaHref: '/download?product=xstream',
+    secondaryCtaHref: 'https://www.svc.plus/xstream/downloads',
     tertiaryCtaLabel: '文档链接',
-    tertiaryCtaHref: '/docs/xstream',
+    tertiaryCtaHref: 'https://www.svc.plus/xstream/docs',
   },
 ]
 

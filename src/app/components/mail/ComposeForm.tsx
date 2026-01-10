@@ -47,7 +47,7 @@ export default function ComposeForm({ tenantId }: ComposeFormProps) {
         await sendMessage(tenantId, form)
         setStatus('已成功发送！')
         setTimeout(() => {
-          router.push(`/panel/mail?tenantId=${tenantId}`)
+          router.push(`/${tenantId}/mail`)
         }, 600)
       } catch (error) {
         setStatus(error instanceof Error ? error.message : '发送失败')

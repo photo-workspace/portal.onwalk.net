@@ -998,7 +998,7 @@ export const translations: Record<'en' | 'zh', Translation> = {
           description: 'If you run into issues, sign out or review the setup documentation.',
           logout: 'Sign out',
           docs: 'View setup guide',
-          docsUrl: '/docs/account-service-configuration/latest',
+          docsUrl: 'https://www.svc.plus/docs/account-service-configuration/latest',
           setup: 'Resume setup',
         },
         modal: {
@@ -1642,7 +1642,7 @@ export const translations: Record<'en' | 'zh', Translation> = {
           description: '遇到问题时可以退出重新登录，或查看绑定指引。',
           logout: '退出登录',
           docs: '查看操作指引',
-          docsUrl: '/docs/account-service-configuration/latest',
+          docsUrl: 'https://www.svc.plus/docs/account-service-configuration/latest',
           setup: '继续设置',
         },
         modal: {
