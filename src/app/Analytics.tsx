@@ -21,7 +21,6 @@ export function Analytics() {
 
     window.gtag('config', GA_MEASUREMENT_ID, {
       page_path: pathname,
-      anonymize_ip: true,
     })
   }, [pathname])
 

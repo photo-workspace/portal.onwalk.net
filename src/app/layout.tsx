@@ -10,25 +10,44 @@ export const metadata = {
   description: 'Unified tools for your cloud native stack',
 }
 
+const GA_ID = 'G-Z621W698Q6'
+
 const htmlAttributes = { lang: 'zh' }
 const bodyClassName = 'bg-[var(--color-background)] text-[var(--color-text)]'
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html {...htmlAttributes}>
-      <body className={bodyClassName}>
+      <head>
+        {/* Google Analytics 4 */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-Z621W698Q6"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
         />
+
         <Script id="ga4-init" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-Z621W698Q6', { anonymize_ip: true });`}
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}', {
+              send_page_view: false
+            });
+          `}
         </Script>
+      </head>
+
+      <body className={bodyClassName}>
+        {/* SPA 路由级 page_view */}
         <Analytics />
-        <AppProviders>{children}</AppProviders>
+
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   )
