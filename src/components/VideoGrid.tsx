@@ -37,7 +37,7 @@ export default function VideoGrid({ items }: { items: ContentItem[] }) {
               <video
                 src={item.src}
                 poster={item.poster}
-                muted
+                controls
                 loop
                 playsInline
                 className="h-auto w-full object-cover"
