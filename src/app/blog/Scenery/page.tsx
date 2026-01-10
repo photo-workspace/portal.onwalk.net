@@ -1,5 +1,4 @@
-export const dynamic = 'error'
-export const revalidate = false
+export const dynamic = 'force-dynamic'
 
 import PostCard from '@/components/PostCard'
 import SiteFooter from '@/components/SiteFooter'

@@ -1,5 +1,4 @@
-export const dynamic = 'error'
-export const revalidate = false
+export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -20,7 +19,7 @@ function normalizeSlug(slugParam: string | string[]) {
 
 export async function generateStaticParams() {
   const slugs = await getContentSlugs('blog')
-  return slugs.map((slug) => ({ slug: [slug] }))
+  return slugs.map((slug) => ({ slug: slug.split('/') }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

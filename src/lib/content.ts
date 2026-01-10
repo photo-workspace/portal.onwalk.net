@@ -21,25 +21,51 @@ export type ContentItem = {
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content')
 
+type MarkdownEntry = {
+  filePath: string
+  slug: string
+}
+
+async function collectMarkdownEntries(dir: string, rootDir: string): Promise<MarkdownEntry[]> {
+  const entries = await fs.readdir(dir, { withFileTypes: true })
+  const results: MarkdownEntry[] = []
+
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      results.push(...(await collectMarkdownEntries(entryPath, rootDir)))
+      continue
+    }
+
+    if (entry.isFile() && entry.name.endsWith('.md')) {
+      const relativePath = path.relative(rootDir, entryPath).replace(/\\/g, '/')
+      results.push({
+        filePath: entryPath,
+        slug: relativePath.replace(/\.md$/, ''),
+      })
+    }
+  }
+
+  return results
+}
+
 async function readMarkdownFiles(type: ContentType): Promise<ContentItem[]> {
   const dir = path.join(CONTENT_DIR, type)
-  const entries = await fs.readdir(dir, { withFileTypes: true })
-  const files = entries.filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+  const entries = await collectMarkdownEntries(dir, dir)
 
   const items = await Promise.all(
-    files.map(async (file) => {
-      const filePath = path.join(dir, file.name)
-      const raw = await fs.readFile(filePath, 'utf8')
+    entries.map(async (entry) => {
+      const raw = await fs.readFile(entry.filePath, 'utf8')
       const { data, content } = matter(raw)
       return {
-        slug: file.name.replace(/\.md$/, ''),
+        slug: entry.slug,
         ...(data as Record<string, unknown>),
         content,
       } as ContentItem
     }),
   )
 
-  return items
+  return items.sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
 export const getContent = cache(async (type: ContentType): Promise<ContentItem[]> => {
