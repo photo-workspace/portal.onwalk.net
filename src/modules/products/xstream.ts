@@ -66,13 +66,15 @@ const xstream: ProductConfig = {
     paygo: [
       {
         label: '价格与账单',
-        href: '/panel/subscription/pricing',
+        href: 'https://www.svc.plus/pricing',
+        external: true,
       },
     ],
     saas: [
       {
         label: '注册与订阅',
-        href: '/panel/subscription/',
+        href: 'https://www.svc.plus/contact',
+        external: true,
       },
     ],
   },

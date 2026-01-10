@@ -43,7 +43,7 @@ export default function Toolbar({ tenantId, tenantName, loading, refresh, labels
             刷新
           </button>
           <Link
-            href={`/panel/mail/compose?tenantId=${tenantId}`}
+            href={`/${tenantId}/mail/compose`}
             className="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-[var(--color-primary-foreground)] shadow-[var(--shadow-sm)] transition hover:bg-[var(--color-primary-hover)]"
           >
             <MailPlus className="h-4 w-4" /> 写邮件

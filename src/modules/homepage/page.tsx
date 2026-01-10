@@ -123,7 +123,7 @@ export default function Homepage() {
           : 'Read the manuals for APIs, console, and automation flows.',
       action: language === 'zh' ? '查看' : 'View',
       icon: '☻',
-      link: '/docs',
+      link: 'https://www.svc.plus/docs',
     },
     {
       name: language === 'zh' ? '示例' : 'Examples',
@@ -133,7 +133,7 @@ export default function Homepage() {
           : 'Reference templates, blueprints, and common workflows.',
       action: language === 'zh' ? '查看' : 'View',
       icon: '✎',
-      link: '/docs/examples',
+      link: 'https://www.svc.plus/docs/examples',
     },
     {
       name: language === 'zh' ? 'CLI 工具' : 'CLI Tools',
@@ -143,7 +143,7 @@ export default function Homepage() {
           : 'Install and configure the CLI to script daily operations.',
       action: language === 'zh' ? '查看' : 'View',
       icon: '⌁',
-      link: '/download',
+      link: 'https://www.svc.plus/downloads',
     },
     {
       name: language === 'zh' ? 'API Explorer' : 'API Explorer',
@@ -153,7 +153,7 @@ export default function Homepage() {
           : 'Explore APIs in-browser and generate request snippets.',
       action: language === 'zh' ? '打开' : 'Open',
       icon: '⇢',
-      link: '/docs/api',
+      link: 'https://www.svc.plus/docs/api',
     },
   ]
 
