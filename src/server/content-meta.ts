@@ -66,10 +66,16 @@ export async function getContentCommitMeta(requestPath: string): Promise<Content
 async function findGitRoot(filePath: string): Promise<string | null> {
   let currentDir = path.dirname(filePath)
   const root = path.parse(currentDir).root
+  const ignoredRoots = [
+    path.resolve(process.cwd(), 'src'),
+    path.resolve(process.cwd(), 'src', 'content'),
+  ]
+
   while (currentDir && currentDir !== root) {
     try {
-      const stat = await fs.stat(path.join(currentDir, '.git'))
-      if (stat.isDirectory()) {
+      const gitPath = path.join(currentDir, '.git')
+      const stat = await fs.stat(gitPath)
+      if ((stat.isDirectory() || stat.isFile()) && !isIgnoredGitRoot(currentDir, ignoredRoots)) {
         return currentDir
       }
     } catch (error) {
@@ -80,6 +86,11 @@ async function findGitRoot(filePath: string): Promise<string | null> {
     currentDir = path.dirname(currentDir)
   }
   return null
+}
+
+function isIgnoredGitRoot(currentDir: string, ignoredRoots: string[]): boolean {
+  const resolved = path.resolve(currentDir)
+  return ignoredRoots.some((ignored) => resolved === ignored || resolved.startsWith(`${ignored}${path.sep}`))
 }
 
 export { ContentNotFoundError }

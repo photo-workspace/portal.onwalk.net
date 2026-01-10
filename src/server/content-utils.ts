@@ -28,6 +28,9 @@ export function normalizeContentPath(requestPath: string): string {
 }
 
 export async function assertContentFile(requestPath: string): Promise<string> {
+  if (containsGitMetadataPath(requestPath)) {
+    throw new ContentNotFoundError(`Content file not found: ${requestPath}`)
+  }
   const absolutePath = normalizeContentPath(requestPath)
   try {
     const stats = await fs.stat(absolutePath)
@@ -45,4 +48,11 @@ export async function assertContentFile(requestPath: string): Promise<string> {
 
 export function toContentRelativePath(absolutePath: string): string {
   return path.relative(CONTENT_ROOT, absolutePath)
+}
+
+function containsGitMetadataPath(requestPath: string): boolean {
+  return requestPath
+    .replace(/\\/g, '/')
+    .split('/')
+    .some((segment) => segment.startsWith('.git'))
 }
