@@ -12,6 +12,8 @@ node_modules/
 # Next.js build output
 .next/
 out/
+public/images/
+public/videos/
 public/_build/
 public/dl-index/
 .contentlayer/
