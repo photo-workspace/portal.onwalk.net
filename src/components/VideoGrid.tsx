@@ -101,7 +101,7 @@ export default function VideoGrid({ items, variant = 'full' }: { items: ContentI
               </span>
             </div>
             <div className="space-y-1 p-4">
-              <Link href="/video" className="text-sm font-medium text-[#1f1f1f] hover:text-[#1f1f1f]">
+              <Link href="/videos" className="text-sm font-medium text-[#1f1f1f] hover:text-[#1f1f1f]">
                 {item.title ?? item.slug}
               </Link>
               {item.location && <p className="text-xs text-[#747775]">{item.location}</p>}
