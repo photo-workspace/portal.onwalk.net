@@ -17,6 +17,7 @@
     "meta-index:to-md": "tsx scripts/meta-index-to-md.ts",
     "mcp:meta-index": "tsx scripts/mcp/meta-index-server.ts",
     "preview": "next build && next start",
+    "mcp:server": "tsx scripts/mcp-server.ts",
     "test": "vitest run --config tests/unit/vitest.config.ts",
     "test:unit": "vitest run --config tests/unit/vitest.config.ts",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.ts"
@@ -74,6 +75,7 @@
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.6.1",
+    "@modelcontextprotocol/sdk": "^1.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "24.0.3",
     "@types/prismjs": "^1.26.3",
