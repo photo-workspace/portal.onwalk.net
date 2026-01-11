@@ -6,33 +6,33 @@ const blurDataURL =
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyM2I0YmUiLz48L3N2Zz4='
 
 export default function ImageCarousel({ items }: { items: ContentItem[] }) {
-  const galleryItems =
+  const galleryItems: Array<ContentItem & { tone?: string }> =
     items.length > 0
       ? items
       : [
           {
             slug: 'urban-geometry',
             title: 'Urban Geometry',
-            cover: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=900&auto=format&fit=crop',
             content: '',
+            tone: 'from-slate-200 via-slate-100 to-slate-50',
           },
           {
             slug: 'misty-forest',
             title: 'Misty Forest',
-            cover: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=900&auto=format&fit=crop',
             content: '',
+            tone: 'from-emerald-100 via-green-50 to-emerald-50',
           },
           {
             slug: 'night-contrast',
             title: 'Night Contrast',
-            cover: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=900&auto=format&fit=crop',
             content: '',
+            tone: 'from-slate-300 via-slate-200 to-slate-100',
           },
           {
             slug: 'soft-light',
             title: 'Soft Light',
-            cover: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=900&auto=format&fit=crop',
             content: '',
+            tone: 'from-amber-100 via-orange-50 to-amber-50',
           },
         ]
 
@@ -44,7 +44,7 @@ export default function ImageCarousel({ items }: { items: ContentItem[] }) {
           className="group relative flex h-[300px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#efefef] bg-white shadow-[0_4px_8px_rgba(0,0,0,0.04)]"
           style={{ aspectRatio: '3 / 4' }}
         >
-          {item.cover && (
+          {item.cover ? (
             <Image
               src={item.cover}
               alt={item.title ?? item.slug}
@@ -54,9 +54,13 @@ export default function ImageCarousel({ items }: { items: ContentItem[] }) {
               placeholder="blur"
               blurDataURL={blurDataURL}
             />
+          ) : (
+            <div className={`h-full w-full bg-gradient-to-br ${item.tone ?? 'from-slate-200 via-slate-100 to-slate-50'}`} />
           )}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent px-4 pb-4 pt-10">
-            <h3 className="text-sm font-medium text-white">{item.title}</h3>
+          <div className="absolute inset-x-0 bottom-0 px-4 pb-4">
+            <span className="inline-flex rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-[#1f1f1f] backdrop-blur">
+              {item.title}
+            </span>
           </div>
         </article>
       ))}

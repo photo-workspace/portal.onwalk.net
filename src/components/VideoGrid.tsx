@@ -10,37 +10,37 @@ const PAGE_SIZE = 12
 
 export default function VideoGrid({ items }: { items: ContentItem[] }) {
   const copy = useOnwalkCopy()
-  const videoItems =
+  const videoItems: Array<ContentItem & { tone?: string }> =
     items.length > 0
       ? items
       : [
           {
             slug: 'city-light',
             title: 'City Light',
-            poster: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1200&auto=format&fit=crop',
             duration: '04:20',
             content: '',
+            tone: 'from-slate-200 via-slate-100 to-slate-50',
           },
           {
             slug: 'morning-walk',
             title: 'Morning Walk',
-            poster: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
             duration: '02:58',
             content: '',
+            tone: 'from-emerald-100 via-green-50 to-emerald-50',
           },
           {
             slug: 'ocean-silence',
             title: 'Ocean Silence',
-            poster: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop',
             duration: '05:12',
             content: '',
+            tone: 'from-sky-100 via-blue-50 to-sky-50',
           },
           {
             slug: 'trail-notes',
             title: 'Trail Notes',
-            poster: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
             duration: '03:46',
             content: '',
+            tone: 'from-amber-100 via-orange-50 to-amber-50',
           },
         ]
   const [pageIndex, setPageIndex] = useState(0)
@@ -81,11 +81,13 @@ export default function VideoGrid({ items }: { items: ContentItem[] }) {
                 />
               ) : item.poster ? (
                 <img src={item.poster} alt={item.title ?? item.slug} className="h-48 w-full object-cover sm:h-56" />
+              ) : item.tone ? (
+                <div className={`h-48 w-full bg-gradient-to-br sm:h-56 ${item.tone}`} />
               ) : (
                 <div className="flex h-48 items-center justify-center text-sm text-[#747775]">{copy.video.empty}</div>
               )}
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/30 text-white shadow-sm backdrop-blur-md">
                   <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
                     <path d="M8 5v14l11-7z" />
                   </svg>
