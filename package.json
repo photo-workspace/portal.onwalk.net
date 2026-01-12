@@ -15,9 +15,10 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "meta-index:to-md": "tsx scripts/meta-index-to-md.ts",
-    "mcp:meta-index": "tsx scripts/mcp/meta-index-server.ts",
+    "mcp:meta-index": "tsx scripts/mcp-server.ts",
     "preview": "next build && next start",
     "mcp:server": "tsx scripts/mcp-server.ts",
+    "mcp:server:meta-index": "tsx scripts/mcp-server.ts",
     "test": "vitest run --config tests/unit/vitest.config.ts",
     "test:unit": "vitest run --config tests/unit/vitest.config.ts",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.ts"

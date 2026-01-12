@@ -38,3 +38,75 @@ yarn tsx scripts/meta-index-to-md.ts
 ```
 
 或作为 MCP tool 调用（见 `scripts/mcp-server.ts`）。
+
+## MCP HTTP/SSE 入口
+
+默认 endpoint：`https://www.onwalk.net/mcp_server_meta_index/`
+
+必须配置 `WEB_SITE_MCP_ACCESS_TOKEN`，并在请求头带上 `Authorization`（支持 `Bearer <token>` 或纯 token）。
+也支持 `x-mcp-token` 或 `?token=...` 作为替代。
+
+示例（建立 SSE 连接）：
+
+```bash
+curl -N \
+  -H "Authorization: Bearer $WEB_SITE_MCP_ACCESS_TOKEN" \
+  https://www.onwalk.net/mcp_server_meta_index/
+```
+
+示例（发送 JSON-RPC 请求；SSE 模式下可附带 `mcp-session-id`）：
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WEB_SITE_MCP_ACCESS_TOKEN" \
+  -H "mcp-session-id: <session-id>" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+  https://www.onwalk.net/mcp_server_meta_index/
+```
+
+## 本地测试
+
+启动：
+
+```bash
+WEB_SITE_MCP_ACCESS_TOKEN=localtest yarn dev --turbo
+```
+
+SSE 连接：
+
+```bash
+curl -N \
+  -H "Authorization: Bearer localtest" \
+  http://localhost:3000/mcp_server_meta_index/
+```
+
+JSON-RPC：
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer localtest" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+  http://localhost:3000/mcp_server_meta_index/
+```
+
+## 线上测试
+
+SSE 连接：
+
+```bash
+curl -N \
+  -H "Authorization: Bearer $WEB_SITE_MCP_ACCESS_TOKEN" \
+  https://www.onwalk.net/mcp_server_meta_index/
+```
+
+JSON-RPC：
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer $WEB_SITE_MCP_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' \
+  https://www.onwalk.net/mcp_server_meta_index/
+```

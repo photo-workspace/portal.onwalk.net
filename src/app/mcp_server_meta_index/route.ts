@@ -1,12 +1,7 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js'
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  type CallToolRequest,
-} from '@modelcontextprotocol/sdk/types.js'
+import { NextRequest } from 'next/server'
+import crypto from 'node:crypto'
 
-import { syncMetaIndexToMarkdown } from './meta-index-to-md'
+import { syncMetaIndexToMarkdown } from '../../../scripts/meta-index-to-md'
 import {
   deleteMetaIndexEntry,
   generateAllMarkdownFromMetaIndex,
@@ -14,67 +9,64 @@ import {
   readMetaIndex,
   upsertMetaIndexEntry,
   type MetaIndexType,
-} from './meta-index'
+} from '../../../scripts/meta-index'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+const DEFAULT_ENDPOINT = 'https://www.onwalk.net/mcp_server_meta_index/'
+const MCP_AUTH_TOKEN = process.env.WEB_SITE_MCP_ACCESS_TOKEN?.trim()
+
+type JsonRpcRequest = {
+  jsonrpc: '2.0'
+  id?: number | string | null
+  method: string
+  params?: Record<string, unknown>
+}
+
+type JsonRpcResponse = {
+  jsonrpc: '2.0'
+  id: number | string | null
+  result?: unknown
+  error?: {
+    code: number
+    message: string
+    data?: unknown
+  }
+}
 
 type MetaIndexToolArgs = {
   metaIndexDir?: string
   contentRoot?: string
   dryRun?: boolean
   types?: string[]
-  authorization?: string
-  token?: string
 }
 
 type MetaIndexListArgs = {
   type: MetaIndexType
-  authorization?: string
-  token?: string
 }
 
 type MetaIndexUpsertArgs = {
   type: MetaIndexType
   entry: Record<string, unknown>
-  authorization?: string
-  token?: string
 }
 
 type MetaIndexDeleteArgs = {
   type: MetaIndexType
   slug: string
-  authorization?: string
-  token?: string
 }
 
 type MetaIndexGenerateArgs = {
   type: MetaIndexType | 'all'
-  authorization?: string
-  token?: string
 }
 
-const DEFAULT_MCP_ENDPOINT = 'https://www.onwalk.net/mcp_server_meta_index/'
-const MCP_AUTH_TOKEN = process.env.WEB_SITE_MCP_ACCESS_TOKEN?.trim()
-
-if (!MCP_AUTH_TOKEN) {
-  console.error('Missing WEB_SITE_MCP_ACCESS_TOKEN. Refusing to start MCP server.')
-  process.exit(1)
+type Session = {
+  controller: ReadableStreamDefaultController<Uint8Array>
+  lastSeen: number
 }
 
-const server = new Server(
-  {
-    name: 'dashboard-meta-index',
-    version: '1.0.0',
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  },
-)
-
-const authorizationSchema = {
-  type: 'string',
-  description: 'Authorization token (supports raw token or "Bearer <token>").',
-}
+const encoder = new TextEncoder()
+const sessions = new Map<string, Session>()
 
 const tools = [
   {
@@ -84,8 +76,6 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        authorization: authorizationSchema,
-        token: authorizationSchema,
         metaIndexDir: {
           type: 'string',
           description: 'Override the meta-index directory (defaults to src/content/meta-index).',
@@ -112,8 +102,6 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        authorization: authorizationSchema,
-        token: authorizationSchema,
         type: { type: 'string', enum: ['image', 'video'] },
       },
       required: ['type'],
@@ -125,8 +113,6 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        authorization: authorizationSchema,
-        token: authorizationSchema,
         type: { type: 'string', enum: ['image', 'video'] },
         entry: { type: 'object' },
       },
@@ -139,8 +125,6 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        authorization: authorizationSchema,
-        token: authorizationSchema,
         type: { type: 'string', enum: ['image', 'video'] },
         slug: { type: 'string' },
       },
@@ -153,8 +137,6 @@ const tools = [
     inputSchema: {
       type: 'object',
       properties: {
-        authorization: authorizationSchema,
-        token: authorizationSchema,
         type: { type: 'string', enum: ['image', 'video', 'all'] },
       },
       required: ['type'],
@@ -162,60 +144,60 @@ const tools = [
   },
 ]
 
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools,
-}))
+function sendSse(controller: ReadableStreamDefaultController<Uint8Array>, event: string, data: unknown) {
+  const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
+  controller.enqueue(encoder.encode(payload))
+}
 
 function normalizeAuthorization(value: string) {
   const trimmed = value.trim()
   return trimmed.toLowerCase().startsWith('bearer ') ? trimmed.slice(7).trim() : trimmed
 }
 
-function getAuthorizationToken(request: CallToolRequest): string | null {
-  const params = request.params as Record<string, unknown> | undefined
-  const args = (params?.arguments ?? {}) as Record<string, unknown>
-  const meta = (params?.meta ?? params?.metadata ?? {}) as Record<string, unknown>
-  const candidates = [
-    meta.authorization,
-    meta.Authorization,
-    args.authorization,
-    args.Authorization,
-    args.token,
-  ]
-
-  for (const value of candidates) {
-    if (typeof value === 'string' && value.trim()) {
-      return normalizeAuthorization(value)
-    }
+function getAuthorizationToken(request: NextRequest) {
+  const headerValue = request.headers.get('authorization')
+  const altHeader = request.headers.get('x-mcp-token')
+  const token = request.nextUrl.searchParams.get('token')
+  const raw = headerValue ?? altHeader ?? token
+  if (!raw) {
+    return null
   }
-
-  return null
+  return normalizeAuthorization(raw)
 }
 
-function assertAuthorized(request: CallToolRequest) {
+function isAuthorized(request: NextRequest) {
   if (!MCP_AUTH_TOKEN) {
-    return
+    return false
   }
   const provided = getAuthorizationToken(request)
-  if (!provided) {
-    throw new Error('Missing Authorization token.')
+  return Boolean(provided && provided === MCP_AUTH_TOKEN)
+}
+
+function jsonRpcError(id: JsonRpcResponse['id'], message: string, data?: unknown): JsonRpcResponse {
+  return {
+    jsonrpc: '2.0',
+    id,
+    error: {
+      code: -32000,
+      message,
+      data,
+    },
   }
-  if (provided !== MCP_AUTH_TOKEN) {
-    throw new Error('Invalid Authorization token.')
-  }
+}
+
+function jsonRpcResult(id: JsonRpcResponse['id'], result: unknown): JsonRpcResponse {
+  return { jsonrpc: '2.0', id, result }
 }
 
 function isMetaIndexType(value: unknown): value is MetaIndexType {
   return value === 'image' || value === 'video'
 }
 
-server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-  assertAuthorized(request)
+async function handleToolsCall(params: Record<string, unknown>) {
+  const name = params?.name as string | undefined
+  const args = (params?.arguments ?? {}) as Record<string, unknown>
 
-  const toolName = request.params.name
-  const args = (request.params.arguments ?? {}) as Record<string, unknown>
-
-  switch (toolName) {
+  switch (name) {
     case 'meta_index_to_md': {
       const payload = args as MetaIndexToolArgs
       const results = await syncMetaIndexToMarkdown({
@@ -224,14 +206,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         dryRun: payload.dryRun,
         types: payload.types,
       })
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(results, null, 2),
-          },
-        ],
-      }
+      return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] }
     }
     case 'meta_index.list': {
       const payload = args as MetaIndexListArgs
@@ -273,17 +248,103 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
       return { content: [{ type: 'text', text: JSON.stringify(written, null, 2) }] }
     }
     default:
-      throw new Error(`Unknown tool: ${toolName}`)
+      throw new Error(`Unknown tool: ${name}`)
   }
-})
-
-async function main() {
-  const transport = new StdioServerTransport()
-  await server.connect(transport)
-  console.error(`MCP server running on stdio. Default endpoint: ${DEFAULT_MCP_ENDPOINT}`)
 }
 
-main().catch((error) => {
-  console.error('Failed to start MCP server:', error)
-  process.exit(1)
-})
+async function handleJsonRpc(request: JsonRpcRequest): Promise<JsonRpcResponse> {
+  const id = request.id ?? null
+  switch (request.method) {
+    case 'initialize':
+      return jsonRpcResult(id, {
+        protocolVersion: '2024-11-05',
+        capabilities: {
+          tools: {},
+        },
+        serverInfo: {
+          name: 'onwalk-meta-index',
+          version: '0.1.0',
+        },
+        endpoint: DEFAULT_ENDPOINT,
+      })
+    case 'tools/list':
+      return jsonRpcResult(id, { tools })
+    case 'tools/call': {
+      const result = await handleToolsCall(request.params ?? {})
+      return jsonRpcResult(id, result)
+    }
+    default:
+      return jsonRpcError(id, `Unsupported method: ${request.method}`)
+  }
+}
+
+function getSessionId(request: NextRequest) {
+  return (
+    request.headers.get('mcp-session-id') ??
+    request.headers.get('x-mcp-session-id') ??
+    request.nextUrl.searchParams.get('sessionId') ??
+    null
+  )
+}
+
+export async function GET(request: NextRequest) {
+  if (!MCP_AUTH_TOKEN) {
+    return new Response('MCP server is not configured.', { status: 503 })
+  }
+  if (!isAuthorized(request)) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const sessionId = crypto.randomUUID()
+
+  const stream = new ReadableStream<Uint8Array>({
+    start(controller) {
+      sessions.set(sessionId, { controller, lastSeen: Date.now() })
+      controller.enqueue(encoder.encode(': connected\n\n'))
+      sendSse(controller, 'ready', { sessionId, endpoint: DEFAULT_ENDPOINT })
+    },
+    cancel() {
+      sessions.delete(sessionId)
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+    },
+  })
+}
+
+export async function POST(request: NextRequest) {
+  if (!MCP_AUTH_TOKEN) {
+    return new Response('MCP server is not configured.', { status: 503 })
+  }
+  if (!isAuthorized(request)) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  let payload: JsonRpcRequest
+  try {
+    payload = (await request.json()) as JsonRpcRequest
+  } catch (error) {
+    return Response.json(jsonRpcError(null, 'Failed to parse JSON-RPC request', { error }), {
+      status: 400,
+    })
+  }
+
+  const response = await handleJsonRpc(payload)
+  const sessionId = getSessionId(request)
+
+  if (sessionId && sessions.has(sessionId)) {
+    const session = sessions.get(sessionId)
+    if (session) {
+      session.lastSeen = Date.now()
+      sendSse(session.controller, 'message', response)
+      return new Response(null, { status: 202 })
+    }
+  }
+
+  return Response.json(response)
+}
