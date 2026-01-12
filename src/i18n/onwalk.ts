@@ -105,7 +105,7 @@ type OnwalkCopy = {
 export const onwalkCopy: Record<Language, OnwalkCopy> = {
   zh: {
     header: {
-      title: '行者影像档案',
+      title: '行者影像',
       nav: {
         home: '首页',
         image: '一图一文',
@@ -209,7 +209,7 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
   },
   en: {
     header: {
-      title: 'Onwalk Image Archive',
+      title: 'Onwalk Notes',
       nav: {
         home: 'Home',
         image: 'Moments',
