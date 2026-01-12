@@ -11,7 +11,7 @@ import { getContentBySlug, getContentSlugs } from '@/lib/content'
 import { renderMarkdownContent } from '@/server/render-markdown'
 
 type PageProps = {
-  params: { slug: string | string[] }
+  params: Promise<{ slug: string | string[] }>
 }
 
 const DESCRIPTION_MIN = 120
@@ -86,7 +86,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const slugPath = normalizeSlug(params.slug)
+  const slugPath = normalizeSlug((await params).slug)
   const post = await getContentBySlug('blog', slugPath)
 
   if (!post) {
@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const slugPath = normalizeSlug(params.slug)
+  const slugPath = normalizeSlug((await params).slug)
   const post = await getContentBySlug('blog', slugPath)
 
   if (!post) {

@@ -1,4 +1,4 @@
-export const dynamic = 'error'
+export const dynamic = 'auto'
 
 import './globals.css'
 import { AppProviders } from './AppProviders'
