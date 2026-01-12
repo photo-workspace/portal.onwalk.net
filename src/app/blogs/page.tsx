@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
 
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import PostCard from '@/components/PostCard'
@@ -14,13 +15,58 @@ type PageProps = {
   searchParams?: Promise<{ page?: string }> | { page?: string }
 }
 
-export default async function BlogPage({ searchParams }: PageProps) {
-  const posts = await getContent('blog')
+const resolvePagination = async (
+  searchParams: PageProps['searchParams'],
+  totalPosts: number,
+) => {
   const resolvedSearchParams = (await Promise.resolve(searchParams)) ?? {}
-  const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(totalPosts / PAGE_SIZE))
   const currentPage = Math.min(
     Math.max(Number(resolvedSearchParams.page ?? 1) || 1, 1),
     totalPages,
+  )
+
+  return { currentPage, totalPages }
+}
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const posts = await getContent('blog')
+  const { currentPage, totalPages } = await resolvePagination(
+    searchParams,
+    posts.length,
+  )
+  const basePath = '/blogs'
+  const previous =
+    currentPage > 1 ? `${basePath}?page=${currentPage - 1}` : undefined
+  const next =
+    currentPage < totalPages
+      ? `${basePath}?page=${currentPage + 1}`
+      : undefined
+  const pagination: Metadata['pagination'] = {}
+
+  if (previous) {
+    pagination.previous = previous
+  }
+  if (next) {
+    pagination.next = next
+  }
+
+  return {
+    alternates: {
+      canonical:
+        currentPage === 1 ? basePath : `${basePath}?page=${currentPage}`,
+    },
+    ...(Object.keys(pagination).length > 0 ? { pagination } : {}),
+  }
+}
+
+export default async function BlogPage({ searchParams }: PageProps) {
+  const posts = await getContent('blog')
+  const { currentPage, totalPages } = await resolvePagination(
+    searchParams,
+    posts.length,
   )
   const startIndex = (currentPage - 1) * PAGE_SIZE
   const pagedPosts = posts.slice(startIndex, startIndex + PAGE_SIZE)
