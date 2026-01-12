@@ -1,5 +1,7 @@
 export const dynamic = 'force-dynamic'
 
+import type { Metadata } from 'next'
+
 import Link from 'next/link'
 
 import PostCard from '@/components/PostCard'
@@ -10,8 +12,30 @@ import { getContent } from '@/lib/content'
 
 const PAGE_SIZE = 6
 
+export const metadata: Metadata = {
+  title: '博客 | Onwalk',
+  description: 'Onwalk 博客，记录行走、摄影与城市观察的故事与更新。',
+  alternates: {
+    canonical: '/blogs',
+  },
+}
+
 type PageProps = {
   searchParams?: Promise<{ page?: string }> | { page?: string }
+}
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const resolvedSearchParams = (await Promise.resolve(searchParams)) ?? {}
+  const page = Number(resolvedSearchParams.page ?? 1)
+  const safePage = Number.isFinite(page) && page > 0 ? page : 1
+  const canonicalSuffix = safePage > 1 ? `?page=${safePage}` : ''
+
+  return {
+    ...metadata,
+    alternates: {
+      canonical: `/blogs${canonicalSuffix}`,
+    },
+  }
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {

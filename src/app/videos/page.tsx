@@ -1,11 +1,21 @@
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
+import type { Metadata } from 'next'
+
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import VideoGrid from '@/components/VideoGrid'
 import PageHeader from '@/components/onwalk/PageHeader'
 import { getPublicVideos } from '@/lib/video'
+
+export const metadata: Metadata = {
+  title: '视频 | Onwalk',
+  description: 'Onwalk 视频集，记录户外、航拍与行走的影像故事。',
+  alternates: {
+    canonical: '/videos',
+  },
+}
 
 export default async function VideosPage() {
   const videos = await getPublicVideos()
