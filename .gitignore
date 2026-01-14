@@ -25,6 +25,7 @@ ui/docs/.contentlayer/
 src/content/about/
 src/content/blog/
 src/content/workshop/
+src/content/
 src/lib/workshopContent.ts
 
 # Lock files (如果不希望追踪)
