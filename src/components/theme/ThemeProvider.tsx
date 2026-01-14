@@ -43,23 +43,24 @@ export interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, initialPreference = 'system' }: ThemeProviderProps) {
-  const resolvedTheme = useThemeStore((state) => state.resolvedTheme)
-  const hydrate = useThemeStore((state) => state.hydrate)
-  const setSystemTheme = useThemeStore((state) => state.setSystemTheme)
-
   useEffect(() => {
+    const { hydrate } = useThemeStore.getState()
     hydrate(initialPreference)
-  }, [hydrate, initialPreference])
-
-  useEffect(() => {
-    applyTheme(resolvedTheme)
-  }, [resolvedTheme])
+    applyTheme(useThemeStore.getState().resolvedTheme)
+    const unsubscribe = useThemeStore.subscribe((state, prevState) => {
+      if (state.resolvedTheme !== prevState.resolvedTheme) {
+        applyTheme(state.resolvedTheme)
+      }
+    })
+    return unsubscribe
+  }, [initialPreference])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return
     }
 
+    const { setSystemTheme } = useThemeStore.getState()
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = (event: MediaQueryListEvent) => {
       setSystemTheme(event.matches ? 'dark' : 'light')
@@ -69,7 +70,7 @@ export function ThemeProvider({ children, initialPreference = 'system' }: ThemeP
     return () => {
       mediaQuery.removeEventListener('change', handleChange)
     }
-  }, [setSystemTheme])
+  }, [])
 
   return <>{children}</>
 }

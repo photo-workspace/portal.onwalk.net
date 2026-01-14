@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { ContentNotFoundError, getContentCommitMeta } from '@server/content-meta'
 
-export const runtime = 'nodejs'
 
 export async function GET(request: NextRequest) {
   const path = request.nextUrl.searchParams.get('path')

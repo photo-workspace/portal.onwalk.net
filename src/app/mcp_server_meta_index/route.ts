@@ -11,8 +11,6 @@ import {
   type MetaIndexType,
 } from '../../../scripts/meta-index'
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
 
 const DEFAULT_ENDPOINT = 'https://www.onwalk.net/mcp_server_meta_index/'
 const MCP_AUTH_TOKEN = process.env.WEB_SITE_MCP_ACCESS_TOKEN?.trim()

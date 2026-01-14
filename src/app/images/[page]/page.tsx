@@ -1,7 +1,6 @@
 import ImagesGallery from '../ImagesGallery'
 import { getImageFiles, imagesPerPage, paginateImages } from '../image-data'
 
-export const dynamicParams = false
 
 export async function generateStaticParams() {
   const files = await getImageFiles()

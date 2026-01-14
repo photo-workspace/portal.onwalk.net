@@ -1,6 +1,5 @@
-export const dynamic = 'force-dynamic'
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { getInternalServerServiceBaseUrl } from '@server/serviceConfig'
 import { getAccountSession, userHasRole } from '@server/account/session'
@@ -30,8 +29,8 @@ function buildForwardHeaders(role: string, permissions: string[]): PermissionAwa
   return headers
 }
 
-export async function GET() {
-  const session = await getAccountSession()
+export async function GET(request: NextRequest) {
+  const session = await getAccountSession(request)
   const user = session.user
 
   if (!user) {
@@ -60,4 +59,3 @@ export async function GET() {
 
   return NextResponse.json(payload, { status: response.status })
 }
-

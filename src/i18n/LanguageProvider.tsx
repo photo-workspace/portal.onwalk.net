@@ -82,16 +82,16 @@ export const useLanguageStore = create<LanguageState>((set) => ({
 }))
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const language = useLanguageStore((state) => state.language)
-  const hydrateLanguage = useLanguageStore((state) => state.hydrateLanguage)
-
   useEffect(() => {
+    const { hydrateLanguage } = useLanguageStore.getState()
     hydrateLanguage()
-  }, [hydrateLanguage])
-
-  useEffect(() => {
-    syncDocumentLanguage(language)
-  }, [language])
+    const unsubscribe = useLanguageStore.subscribe((state, prevState) => {
+      if (state.language !== prevState.language) {
+        syncDocumentLanguage(state.language)
+      }
+    })
+    return unsubscribe
+  }, [])
 
   return children
 }

@@ -1,6 +1,5 @@
-export const dynamic = 'auto'
-
 import './globals.css'
+import { Suspense } from 'react'
 import { AppProviders } from './AppProviders'
 import Script from 'next/script'
 import { Analytics } from './Analytics'
@@ -46,9 +45,11 @@ export default function RootLayout({
         {/* SPA 路由级 page_view */}
         <Analytics />
 
-        <AppProviders>
-          {children}
-        </AppProviders>
+        <Suspense fallback={<div />}>
+          <AppProviders>
+            {children}
+          </AppProviders>
+        </Suspense>
       </body>
     </html>
   )

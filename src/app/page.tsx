@@ -1,6 +1,3 @@
-export const dynamic = 'force-dynamic'
-export const revalidate = false
-
 import Link from 'next/link'
 
 import { onwalkSeoDescription, onwalkSeoTitle } from '@/lib/seo'
