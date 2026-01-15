@@ -1,7 +1,7 @@
 import 'server-only'
 
 import type { StorageClient, StorageConfig, PutObjectOptions, StorageObjectResult } from '../types'
-import { buildPublicUrl, normalizeKey } from '../utils'
+import { buildPublicUrl, normalizeKey, stripPrefix } from '../utils'
 
 export async function createGcsClient(config: StorageConfig): Promise<StorageClient> {
   const bucketName = config.gcs?.bucket ?? config.bucket
@@ -50,10 +50,23 @@ export async function createGcsClient(config: StorageConfig): Promise<StorageCli
     return buildPublicUrl(config.gcs?.publicBaseUrl ?? config.publicBaseUrl, objectKey)
   }
 
+  const listObjects = async (listPrefix?: string): Promise<string[]> => {
+    const objectPrefix = normalizeKey(prefix, listPrefix ?? '')
+    const [files] = await bucket.getFiles({ prefix: objectPrefix || undefined })
+    return files.map((file) => stripPrefix(prefix, file.name))
+  }
+
+  const deleteObject = async (key: string): Promise<void> => {
+    const objectKey = normalizeKey(prefix, key)
+    await bucket.file(objectKey).delete({ ignoreNotFound: true })
+  }
+
   return {
     provider: 'gcs',
     getObject,
     putObject,
     getPublicUrl,
+    listObjects,
+    deleteObject,
   }
 }

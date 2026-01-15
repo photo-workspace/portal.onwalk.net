@@ -1,9 +1,15 @@
 import 'server-only'
 
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
 
 import type { StorageClient, StorageConfig, PutObjectOptions, StorageObjectResult } from '../types'
-import { buildPublicUrl, normalizeKey, objectBodyToBuffer } from '../utils'
+import { buildPublicUrl, normalizeKey, objectBodyToBuffer, stripPrefix } from '../utils'
 
 export function createS3Client(config: StorageConfig): StorageClient {
   const bucket = config.bucket
@@ -59,10 +65,41 @@ export function createS3Client(config: StorageConfig): StorageClient {
     return buildPublicUrl(config.publicBaseUrl, objectKey)
   }
 
+  const listObjects = async (listPrefix?: string): Promise<string[]> => {
+    const objectPrefix = normalizeKey(prefix, listPrefix ?? '')
+    const keys: string[] = []
+    let continuationToken: string | undefined
+
+    do {
+      const result = await client.send(
+        new ListObjectsV2Command({
+          Bucket: bucket,
+          Prefix: objectPrefix || undefined,
+          ContinuationToken: continuationToken,
+        }),
+      )
+      for (const item of result.Contents ?? []) {
+        if (item.Key) {
+          keys.push(stripPrefix(prefix, item.Key))
+        }
+      }
+      continuationToken = result.IsTruncated ? result.NextContinuationToken : undefined
+    } while (continuationToken)
+
+    return keys
+  }
+
+  const deleteObject = async (key: string): Promise<void> => {
+    const objectKey = normalizeKey(prefix, key)
+    await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: objectKey }))
+  }
+
   return {
     provider: 's3',
     getObject,
     putObject,
     getPublicUrl,
+    listObjects,
+    deleteObject,
   }
 }

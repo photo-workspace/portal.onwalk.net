@@ -1,7 +1,7 @@
 import 'server-only'
 
 import type { StorageClient, StorageConfig, PutObjectOptions, StorageObjectResult } from '../types'
-import { buildPublicUrl, normalizeKey } from '../utils'
+import { buildPublicUrl, normalizeKey, stripPrefix } from '../utils'
 
 export async function createOssClient(config: StorageConfig): Promise<StorageClient> {
   const bucketName = config.oss?.bucket ?? config.bucket
@@ -48,10 +48,38 @@ export async function createOssClient(config: StorageConfig): Promise<StorageCli
     return buildPublicUrl(config.oss?.publicBaseUrl ?? config.publicBaseUrl, objectKey)
   }
 
+  const listObjects = async (listPrefix?: string): Promise<string[]> => {
+    const objectPrefix = normalizeKey(prefix, listPrefix ?? '')
+    const keys: string[] = []
+    let continuationToken: string | undefined
+
+    do {
+      const result = await client.list({
+        prefix: objectPrefix || undefined,
+        marker: continuationToken,
+      })
+      for (const object of result.objects ?? []) {
+        if (object.name) {
+          keys.push(stripPrefix(prefix, object.name))
+        }
+      }
+      continuationToken = result.nextMarker || undefined
+    } while (continuationToken)
+
+    return keys
+  }
+
+  const deleteObject = async (key: string): Promise<void> => {
+    const objectKey = normalizeKey(prefix, key)
+    await client.delete(objectKey)
+  }
+
   return {
     provider: 'oss',
     getObject,
     putObject,
     getPublicUrl,
+    listObjects,
+    deleteObject,
   }
 }

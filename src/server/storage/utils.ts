@@ -27,6 +27,21 @@ export function buildPublicUrl(baseUrl: string | undefined, key: string): string
   return `${normalized}/${key.replace(/^\/+/, '')}`
 }
 
+export function stripPrefix(basePrefix: string | undefined, key: string): string {
+  const trimmedPrefix = basePrefix?.replace(/^\/+|\/+$/g, '')
+  if (!trimmedPrefix) {
+    return key.replace(/^\/+/, '')
+  }
+  const normalizedKey = key.replace(/^\/+/, '')
+  if (normalizedKey === trimmedPrefix) {
+    return ''
+  }
+  if (normalizedKey.startsWith(`${trimmedPrefix}/`)) {
+    return normalizedKey.slice(trimmedPrefix.length + 1)
+  }
+  return normalizedKey
+}
+
 export async function objectBodyToBuffer(body: unknown): Promise<Buffer> {
   if (!body) {
     throw new Error('Object body is empty')

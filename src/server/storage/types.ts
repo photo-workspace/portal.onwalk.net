@@ -51,4 +51,6 @@ export interface StorageClient {
   getObject: (key: string) => Promise<Buffer>
   putObject: (key: string, body: Buffer | string, options?: PutObjectOptions) => Promise<StorageObjectResult>
   getPublicUrl: (key: string) => string | undefined
+  listObjects: (prefix?: string) => Promise<string[]>
+  deleteObject: (key: string) => Promise<void>
 }
