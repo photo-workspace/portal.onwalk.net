@@ -12,6 +12,10 @@ function buildExcerpt(content: string): string {
   return cleaned.slice(0, 120)
 }
 
+function isLocalImage(src: string) {
+  return src.startsWith('/') && !src.startsWith('//')
+}
+
 export default function PostCard({ post }: { post: ContentItem }) {
   const href = `/blogs/${post.slug}`
 
@@ -20,14 +24,26 @@ export default function PostCard({ post }: { post: ContentItem }) {
       <div className="flex flex-col gap-4">
         {post.cover && (
           <Link href={href} aria-label={post.title ?? post.slug}>
-            <Image
-              src={post.cover}
-              alt={post.title ?? post.slug}
-              width={1200}
-              height={800}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="h-48 w-full rounded-xl object-cover"
-            />
+            {isLocalImage(post.cover) ? (
+              <Image
+                src={post.cover}
+                alt={post.title ?? post.slug}
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="h-48 w-full rounded-xl object-cover"
+              />
+            ) : (
+              <img
+                src={post.cover}
+                alt={post.title ?? post.slug}
+                width={1200}
+                height={800}
+                className="h-48 w-full rounded-xl object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
           </Link>
         )}
         <div>

@@ -79,6 +79,10 @@ function getDescriptionText(post: { content?: string; summary?: string }) {
   return rawText.slice(0, DESCRIPTION_MAX).trim()
 }
 
+function isLocalImage(src: string) {
+  return src.startsWith('/') && !src.startsWith('//')
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const slugPath = normalizeSlug((await params).slug)
   const post = await getContentBySlug('blog', slugPath)
@@ -132,16 +136,27 @@ export default async function BlogPostPage({ params }: PageProps) {
         <header className="mt-6 space-y-3">
           <h1 className="text-3xl font-semibold">{post.title}</h1>
           {post.date && <p className="text-xs text-slate-500">{post.date}</p>}
-          {post.cover && (
-            <Image
-              src={post.cover}
-              alt={post.title ?? post.slug}
-              width={1200}
-              height={800}
-              sizes="100vw"
-              className="mt-6 h-auto w-full rounded-2xl"
-            />
-          )}
+          {post.cover &&
+            (isLocalImage(post.cover) ? (
+              <Image
+                src={post.cover}
+                alt={post.title ?? post.slug}
+                width={1200}
+                height={800}
+                sizes="100vw"
+                className="mt-6 h-auto w-full rounded-2xl"
+              />
+            ) : (
+              <img
+                src={post.cover}
+                alt={post.title ?? post.slug}
+                width={1200}
+                height={800}
+                className="mt-6 h-auto w-full rounded-2xl"
+                loading="lazy"
+                decoding="async"
+              />
+            ))}
         </header>
         <article
           className="prose mt-8 max-w-none text-sm leading-relaxed"

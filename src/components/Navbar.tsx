@@ -1,6 +1,6 @@
 'use client'
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../i18n/LanguageProvider'
@@ -95,7 +95,6 @@ export default function Navbar() {
                   width={24}
                   height={24}
                   className="h-[20px] w-[20px] opacity-90"
-                  unoptimized
                 />
                 <span className="text-sm font-medium opacity-90">Cloud-Neutral</span>
                 <span className="rounded-md bg-indigo-500/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-200">

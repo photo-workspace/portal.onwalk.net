@@ -1,8 +1,8 @@
 # =======================================================
 # Global ARGs — 必须在所有 FROM 之前声明
 # =======================================================
-ARG NODE_BUILDER_IMAGE=node:22-bookworm
-ARG NODE_RUNTIME_IMAGE=node:22-slim
+ARG NODE_BUILDER_IMAGE=node:24-bookworm
+ARG NODE_RUNTIME_IMAGE=node:24-slim
 
 # -------------------------------------------------------
 # Stage 1 — Builder (Turbopack + standalone)

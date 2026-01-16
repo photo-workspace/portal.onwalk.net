@@ -4,19 +4,20 @@ import Link from 'next/link'
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import PageHeader from '@/components/onwalk/PageHeader'
+import type { ContentItem } from '@/lib/content'
 
 type ImagesGalleryProps = {
-  files: string[]
+  items: ContentItem[]
   currentPage: number
   totalPages: number
   totalImages: number
 }
 
-const formatImageTitle = (filename: string) =>
-  filename
-    .replace(/\.[^/.]+$/, '')
-    .replace(/[-_]+/g, ' ')
-    .trim()
+const formatImageTitle = (value?: string) => value?.replace(/[-_]+/g, ' ').trim()
+
+function isLocalImage(src: string) {
+  return src.startsWith('/') && !src.startsWith('//')
+}
 
 function buildPageHref(page: number) {
   if (page <= 1) {
@@ -27,7 +28,7 @@ function buildPageHref(page: number) {
 }
 
 export default function ImagesGallery({
-  files,
+  items,
   currentPage,
   totalPages,
   totalImages,
@@ -38,30 +39,48 @@ export default function ImagesGallery({
       <main className="mx-auto w-full max-w-6xl px-6 pb-20">
         <PageHeader variant="image" />
         <div className="rounded-[28px] border border-slate-200 bg-white/80 p-6 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] backdrop-blur">
-          {files.length === 0 ? (
+          {items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center text-sm text-slate-500">
-              暂无图片，请将图片放在 public/images/ 目录下。
+              暂无图片，请将图片上传到 R2，或临时放在 public/images/ 目录下调试。
             </div>
           ) : (
             <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [column-fill:_balance]">
-              {files.map((filename) => (
+              {items.map((item) => (
                 <article
-                  key={filename}
+                  key={item.slug}
                   className="mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_28px_-24px_rgba(15,23,42,0.4)]"
                 >
-                  <Image
-                    src={`/images/${filename}`}
-                    alt={formatImageTitle(filename)}
-                    width={1200}
-                    height={800}
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                    className="h-auto w-full object-cover"
-                  />
+                  {item.cover ? (
+                    isLocalImage(item.cover) ? (
+                      <Image
+                        src={item.cover}
+                        alt={formatImageTitle(item.title) ?? item.slug}
+                        width={1200}
+                        height={800}
+                        sizes="(max-width: 1024px) 100vw, 33vw"
+                        className="h-auto w-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={item.cover}
+                        alt={formatImageTitle(item.title) ?? item.slug}
+                        width={1200}
+                        height={800}
+                        className="h-auto w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )
+                  ) : (
+                    <div className="flex h-48 items-center justify-center text-sm text-slate-400">
+                      图片缺失
+                    </div>
+                  )}
                   <div className="space-y-2 px-4 pb-4 pt-3">
                     <h2 className="text-base font-semibold text-slate-900">
-                      {formatImageTitle(filename)}
+                      {formatImageTitle(item.title) ?? item.slug}
                     </h2>
-                    <p className="text-xs text-slate-500">公共图库 · {filename}</p>
+                    <p className="text-xs text-slate-500">公共图库 · {item.slug}</p>
                   </div>
                 </article>
               ))}

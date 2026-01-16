@@ -1,4 +1,4 @@
-export type StorageProvider = 's3' | 'gcs' | 'oss' | 'vercel'
+export type StorageProvider = 's3' | 'gcs' | 'oss' | 'r2'
 
 export type StorageCredentials = {
   accessKeyId?: string
@@ -29,9 +29,11 @@ export type StorageConfig = {
     region?: string
     publicBaseUrl?: string
   }
-  vercel?: {
-    token?: string
-    access?: 'public' | 'private'
+  r2?: {
+    endpoint?: string
+    bucket?: string
+    region?: string
+    publicBaseUrl?: string
   }
 }
 

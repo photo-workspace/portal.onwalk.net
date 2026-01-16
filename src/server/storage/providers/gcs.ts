@@ -1,5 +1,3 @@
-import 'server-only'
-
 import type { StorageClient, StorageConfig, PutObjectOptions, StorageObjectResult } from '../types'
 import { buildPublicUrl, normalizeKey, stripPrefix } from '../utils'
 

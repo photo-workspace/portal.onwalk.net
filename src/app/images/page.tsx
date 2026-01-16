@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import ImagesGallery from './ImagesGallery'
-import { getImageFiles, paginateImages } from './image-data'
+import { getImageItems, paginateImages } from './image-data'
 
 export const metadata: Metadata = {
   title: '影像 | Onwalk',
@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 }
 
 export default async function ImagesPage() {
-  const files = await getImageFiles()
-  const { currentPage, totalPages, totalImages, pagedFiles } = paginateImages(files, 1)
+  const items = await getImageItems()
+  const { currentPage, totalPages, totalImages, pagedItems } = paginateImages(items, 1)
 
   return (
     <ImagesGallery
-      files={pagedFiles}
+      items={pagedItems}
       currentPage={currentPage}
       totalPages={totalPages}
       totalImages={totalImages}

@@ -2,7 +2,6 @@
 
 import { MessageCircle, Sparkles, Twitter } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import Image from 'next/image'
 
 import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
 
@@ -61,13 +60,14 @@ export default function SiteFooter() {
                 {icon}
                 {item.qrImage ? (
                   <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-3 hidden -translate-x-1/2 flex-col items-center gap-1 rounded-lg border border-slate-200 bg-white p-2 text-[10px] text-slate-500 shadow-lg group-hover:flex">
-                    <Image
+                    <img
                       src={item.qrImage}
                       alt={item.qrAlt ?? item.label}
                       width={112}
                       height={112}
-                      unoptimized
                       className="h-28 w-28"
+                      loading="lazy"
+                      decoding="async"
                     />
                     {item.qrHint ? <span>{item.qrHint}</span> : null}
                   </span>

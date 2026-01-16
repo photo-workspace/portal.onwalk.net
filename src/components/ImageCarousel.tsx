@@ -1,9 +1,5 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import type { ContentItem } from '@/lib/content'
-
-const blurDataURL =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMyM2I0YmUiLz48L3N2Zz4='
 
 export default function ImageCarousel({ items }: { items: ContentItem[] }) {
   const galleryItems: Array<ContentItem & { tone?: string }> = items
@@ -17,14 +13,14 @@ export default function ImageCarousel({ items }: { items: ContentItem[] }) {
           style={{ aspectRatio: '3 / 4' }}
         >
           {item.cover ? (
-            <Image
+            <img
               src={item.cover}
               alt={item.title ?? item.slug}
               width={900}
               height={1200}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              placeholder="blur"
-              blurDataURL={blurDataURL}
+              loading="lazy"
+              decoding="async"
             />
           ) : (
             <div className={`h-full w-full bg-gradient-to-br ${item.tone ?? 'from-slate-200 via-slate-100 to-slate-50'}`} />

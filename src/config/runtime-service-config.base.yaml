@@ -5,7 +5,7 @@ dashboardUrl: https://console.svc.plus
 internalApiBaseUrl: http://127.0.0.1:8090
 logLevel: info
 storage:
-  provider: s3
+  provider: r2
   bucket: example-bucket
   region: ap-southeast-1
   endpoint: https://s3.example.com
@@ -30,6 +30,3 @@ storage:
     bucket: sit-portal-onwalk-net
     region: auto
     publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
-  vercel:
-    token: { env: BLOB_READ_WRITE_TOKEN }
-    access: public

@@ -1,10 +1,9 @@
 import 'server-only'
 
-import { loadRuntimeConfig, type RuntimeConfig } from '../runtime-loader'
+import { loadRuntimeConfig, type RuntimeConfig } from '../runtime-loader.shared'
 import { createGcsClient } from './providers/gcs'
 import { createOssClient } from './providers/oss'
 import { createS3Client } from './providers/s3'
-import { createVercelBlobClient } from './providers/vercel'
 import type { StorageClient, StorageConfig, StorageProvider } from './types'
 
 const storageClientCache = new Map<string, StorageClient>()
@@ -47,14 +46,23 @@ export async function createStorageClient(config: StorageConfig): Promise<Storag
     case 's3':
       client = createS3Client(config)
       break
+    case 'r2': {
+      const mergedConfig = {
+        ...config,
+        publicBaseUrl: config.r2?.publicBaseUrl ?? config.publicBaseUrl,
+        bucket: config.r2?.bucket ?? config.bucket,
+        region: config.r2?.region ?? config.region,
+        endpoint: config.r2?.endpoint ?? config.endpoint,
+      }
+      const s3Client = createS3Client(mergedConfig)
+      client = { ...s3Client, provider: 'r2' }
+      break
+    }
     case 'gcs':
       client = await createGcsClient(config)
       break
     case 'oss':
       client = await createOssClient(config)
-      break
-    case 'vercel':
-      client = await createVercelBlobClient(config)
       break
     default:
       throw new Error(`[storage] Unsupported provider: ${String(config.provider)}`)

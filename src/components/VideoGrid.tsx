@@ -12,6 +12,10 @@ const PAGE_SIZE = 12
 type VideoGridVariant = 'overview' | 'full'
 type VideoGridColumns = 2 | 3
 
+function isLocalImage(src: string) {
+  return src.startsWith('/') && !src.startsWith('//')
+}
+
 export default function VideoGrid({
   items,
   variant = 'full',
@@ -56,15 +60,26 @@ export default function VideoGrid({
                   onMouseLeave={(event) => event.currentTarget.pause()}
                 />
               ) : item.poster ? (
-                <Image
-                  src={item.poster}
-                  alt={item.title ?? item.slug}
-                  width={1280}
-                  height={720}
-                  sizes="(max-width: 1024px) 100vw, 33vw"
-                  unoptimized
-                  className="h-48 w-full object-cover sm:h-56"
-                />
+                isLocalImage(item.poster) ? (
+                  <Image
+                    src={item.poster}
+                    alt={item.title ?? item.slug}
+                    width={1280}
+                    height={720}
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    className="h-48 w-full object-cover sm:h-56"
+                  />
+                ) : (
+                  <img
+                    src={item.poster}
+                    alt={item.title ?? item.slug}
+                    width={1280}
+                    height={720}
+                    className="h-48 w-full object-cover sm:h-56"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )
               ) : (
                 <div className="flex h-48 items-center justify-center text-sm text-[#747775]">{copy.video.empty}</div>
               )}

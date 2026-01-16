@@ -11,7 +11,7 @@ const nextConfig = {
   output: "standalone",   // 让 Next.js 生成可独立运行的最小产物（大幅减小 Docker 镜像）
   compress: true,         // Gzip 压缩输出（确保小体积网络传输）
   // 避免开发环境通过非 localhost 访问时的 allowedDevOrigins 警告
-  allowedDevOrigins: ["localhost", "127.0.0.1", "0.0.0.0", "::1"],
+  allowedDevOrigins: ["localhost", "127.0.0.1", "0.0.0.0", "::1", "172.20.10.3"],
 
   // 配置允许的外部图片域名
   images: {

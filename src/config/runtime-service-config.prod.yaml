@@ -1,12 +1,17 @@
 # Overrides for the production environment.
 logLevel: warn
 storage:
-  provider: s3
-  bucket: example-bucket
-  region: ap-southeast-1
-  endpoint: https://s3.example.com
+  provider: r2
+  bucket: sit-portal-onwalk-net
+  region: auto
+  endpoint: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
   prefix: public
-  publicBaseUrl: https://cdn.example.com
+  publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
+  r2:
+    endpoint: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
+    bucket: sit-portal-onwalk-net
+    region: auto
+    publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
 regions:
   cn:
     apiBaseUrl: https://cn-api.svc.plus

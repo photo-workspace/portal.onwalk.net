@@ -1,34 +1,22 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
+import type { ContentItem } from '@/lib/content'
+import { listMediaItems } from '@/lib/mediaListing'
 
-const imageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif'])
 export const imagesPerPage = 12
 
-const getImagesDirectory = () => path.join(process.cwd(), 'public', 'images')
-
-export async function getImageFiles() {
-  try {
-    const entries = await fs.readdir(getImagesDirectory(), { withFileTypes: true })
-    return entries
-      .filter((entry) => entry.isFile())
-      .map((entry) => entry.name)
-      .filter((name) => imageExtensions.has(path.extname(name).toLowerCase()))
-      .sort((a, b) => a.localeCompare(b, 'en'))
-  } catch {
-    return []
-  }
+export async function getImageItems(): Promise<ContentItem[]> {
+  return listMediaItems('images', { sort: 'name' })
 }
 
-export function paginateImages(files: string[], page: number) {
-  const totalPages = Math.max(1, Math.ceil(files.length / imagesPerPage))
+export function paginateImages(items: ContentItem[], page: number) {
+  const totalPages = Math.max(1, Math.ceil(items.length / imagesPerPage))
   const currentPage = Math.min(Math.max(page, 1), totalPages)
   const startIndex = (currentPage - 1) * imagesPerPage
-  const pagedFiles = files.slice(startIndex, startIndex + imagesPerPage)
+  const pagedItems = items.slice(startIndex, startIndex + imagesPerPage)
 
   return {
     currentPage,
     totalPages,
-    totalImages: files.length,
-    pagedFiles,
+    totalImages: items.length,
+    pagedItems,
   }
 }

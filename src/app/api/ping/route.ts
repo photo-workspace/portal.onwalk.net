@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server'
 import { loadRuntimeConfig } from '@server/runtime-loader'
 
 export async function GET(request: Request) {
-  const hostnameHeader = request.headers.get('host') ?? undefined
-  const runtimeConfig = loadRuntimeConfig({ hostname: hostnameHeader })
+  const runtimeConfig = loadRuntimeConfig()
 
   const payload = {
     status: 'ok' as const,
