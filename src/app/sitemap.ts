@@ -3,13 +3,15 @@ import fs from 'fs'
 import path from 'path'
 
 const baseUrl = 'https://www.onwalk.net'
-const contentRoot = path.join(process.cwd(), 'content')
+const contentRoot = path.join(process.cwd(), 'src', 'content')
 
 type ContentSection = {
   folder: string
   route: string
   changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
   priority: number
+  isMedia?: boolean
+  mediaKind?: MediaKind
 }
 
 const sections: ContentSection[] = [
@@ -24,12 +26,16 @@ const sections: ContentSection[] = [
     route: 'images',
     changeFrequency: 'monthly',
     priority: 0.6,
+    isMedia: true,
+    mediaKind: 'images',
   },
   {
     folder: 'videos',
     route: 'videos',
     changeFrequency: 'monthly',
     priority: 0.6,
+    isMedia: true,
+    mediaKind: 'videos',
   },
 ]
 
@@ -57,10 +63,26 @@ const indexEntries: MetadataRoute.Sitemap = [
 ]
 
 const contentExtensions = new Set(['.md', '.mdx'])
+import { listMediaItems, type MediaKind } from '@/lib/mediaListing'
 
-const getContentEntries = (
+const getContentEntries = async (
   section: ContentSection,
-): MetadataRoute.Sitemap => {
+): Promise<MetadataRoute.Sitemap> => {
+  if (section.isMedia && section.mediaKind) {
+    try {
+      const items = await listMediaItems(section.mediaKind, { sort: 'name' })
+      return items.map((item) => ({
+        url: `${baseUrl}/${section.route}/${item.slug}`,
+        // media items don't strictly have mtime in ContentItem, defaulting to undefined (omit lastModified)
+        // or we could use current date if needed, but omitted is safer for now.
+        changeFrequency: section.changeFrequency,
+        priority: section.priority,
+      }))
+    } catch {
+      return []
+    }
+  }
+
   const directory = path.join(contentRoot, section.folder)
   if (!fs.existsSync(directory)) {
     return []
@@ -85,10 +107,11 @@ const getContentEntries = (
     })
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const contentEntries = sections.flatMap((section) =>
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const contentEntriesPromises = sections.map((section) =>
     getContentEntries(section),
   )
+  const contentEntries = (await Promise.all(contentEntriesPromises)).flat()
 
   return [...indexEntries, ...contentEntries]
 }

@@ -4,6 +4,10 @@ import { AppProviders } from './AppProviders'
 import Script from 'next/script'
 import { Analytics as GoogleAnalytics } from './Analytics'
 import { onwalkSeoDescription, onwalkSeoTitle } from '@/lib/seo'
+import { VercelAnalyticsClient } from './vercel-analytics-client'
+
+const enableVercelAnalytics =
+  process.env.NEXT_PUBLIC_VERCEL_ANALYTICS === '1'
 
 export const metadata = {
   title: onwalkSeoTitle,
@@ -51,6 +55,7 @@ export default function RootLayout({
           </AppProviders>
         </Suspense>
 
+        <VercelAnalyticsClient enabled={enableVercelAnalytics} />
       </body>
     </html>
   )
