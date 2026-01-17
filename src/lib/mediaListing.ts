@@ -178,13 +178,11 @@ export async function listMediaItems(
 
   /*
    * Environment Control for Local Media Fallback:
-   * - Development: Enabled by default (NODE_ENV !== 'production')
-   * - Production: Disabled by default (Strictly Object Storage)
+   * - Default: Disabled (strictly object storage)
    * - Override: ENABLE_LOCAL_MEDIA_FALLBACK="true" forces it ON in any env.
    */
   const envEnableLocalRaw = process.env.ENABLE_LOCAL_MEDIA_FALLBACK
-  const isDev = process.env.NODE_ENV !== 'production'
-  const isLocalEnabled = envEnableLocalRaw === 'true' || envEnableLocalRaw === '1' || (envEnableLocalRaw === undefined && isDev)
+  const isLocalEnabled = envEnableLocalRaw === 'true' || envEnableLocalRaw === '1'
 
   const [storageItems, localItems] = await Promise.all([
     listStorageItems(kind, sort),

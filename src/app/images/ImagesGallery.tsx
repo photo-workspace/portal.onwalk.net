@@ -42,7 +42,8 @@ export default function ImagesGallery({
         <div className="rounded-[28px] border border-slate-200 bg-white/80 p-6 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.35)] backdrop-blur">
           {items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-12 text-center text-sm text-slate-500">
-              暂无图片，请将图片上传到 R2，或临时放在 public/images/ 目录下调试。
+              暂无图片，请将图片上传到 R2 的 images/ 目录下。若需使用本地 public/images/ 调试，请设置
+              ENABLE_LOCAL_MEDIA_FALLBACK=true。
             </div>
           ) : (
             <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [column-fill:_balance]">

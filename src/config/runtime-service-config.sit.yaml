@@ -8,5 +8,5 @@ storage:
   bucket: example-bucket
   region: ap-southeast-1
   endpoint: https://s3.example.com
-  prefix: public
+  prefix: /
   publicBaseUrl: https://cdn.example.com

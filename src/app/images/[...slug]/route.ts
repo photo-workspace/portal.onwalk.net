@@ -31,8 +31,8 @@ function buildKey(slug: string[]): string | null {
     return null
   }
 
-  // Allow arbitrary folder structure: public/images/a/b/c/.../file.ext
-  return `public/images/${slug.join('/')}`
+  // Allow arbitrary folder structure: images/a/b/c/.../file.ext
+  return `images/${slug.join('/')}`
 }
 
 function redirectResponse(url: string): Response {
