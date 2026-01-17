@@ -69,35 +69,29 @@ async function readMarkdownFiles(type: ContentType): Promise<ContentItem[]> {
   return items.sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
-export const getContent = unstable_cache(
-  async (type: ContentType): Promise<ContentItem[]> => {
-    try {
-      return await readMarkdownFiles(type)
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        throw error
-      }
-      return []
+export const getContent = async (type: ContentType): Promise<ContentItem[]> => {
+  try {
+    return await readMarkdownFiles(type)
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      throw error
     }
-  },
-  ['content'],
-)
+    return []
+  }
+}
 
-export const getContentBySlug = unstable_cache(
-  async (type: ContentType, slug: string): Promise<ContentItem | undefined> => {
-    const items = await getContent(type)
-    return items.find((item) => item.slug === slug)
-  },
-  ['content-by-slug'],
-)
+export const getContentBySlug = async (
+  type: ContentType,
+  slug: string,
+): Promise<ContentItem | undefined> => {
+  const items = await getContent(type)
+  return items.find((item) => item.slug === slug)
+}
 
-export const getContentSlugs = unstable_cache(
-  async (type: ContentType): Promise<string[]> => {
-    const items = await getContent(type)
-    return items.map((item) => item.slug)
-  },
-  ['content-slugs'],
-)
+export const getContentSlugs = async (type: ContentType): Promise<string[]> => {
+  const items = await getContent(type)
+  return items.map((item) => item.slug)
+}
 
 export function sortContentByDate(items: ContentItem[]): ContentItem[] {
   return [...items].sort((a, b) => {
