@@ -2,16 +2,12 @@
 logLevel: warn
 storage:
   provider: r2
-  bucket: sit-portal-onwalk-net
-  region: auto
-  endpoint: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
-  prefix: /
-  publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
   r2:
-    endpoint: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
-    bucket: sit-portal-onwalk-net
+    bucket: { env: R2_BUCKET_NAME }
     region: auto
-    publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
+    prefix: /
+    publicBaseUrl: { env: R2_PUBLIC_BASE_URL }
+    endpoint: { env: R2_ENDPOINT }
 regions:
   cn:
     apiBaseUrl: https://cn-api.svc.plus

@@ -6,27 +6,30 @@ internalApiBaseUrl: http://127.0.0.1:8090
 logLevel: info
 storage:
   provider: r2
-  bucket: example-bucket
-  region: ap-southeast-1
-  endpoint: https://s3.example.com
-  prefix: /
-  publicBaseUrl: https://cdn.example.com
   credentials:
     accessKeyId: { env: ACCESS_KEY_ID }
     secretAccessKey: { env: SECRET_ACCESS_KEY }
     sessionToken: { env: SESSION_TOKEN }
+  s3:
+    projectId: example-project
+    bucket: example-gcs-bucket
+    publicBaseUrl: https://storage.googleapis.com/example-gcs-bucket
+    prefix: /
   gcs:
     projectId: example-project
     bucket: example-gcs-bucket
     publicBaseUrl: https://storage.googleapis.com/example-gcs-bucket
+    prefix: /
     credentialsJson: { env: GCP_SERVICE_ACCOUNT_JSON }
   oss:
     endpoint: https://oss-cn-shanghai.aliyuncs.com
     bucket: example-oss-bucket
     region: cn-shanghai
+    prefix: /
     publicBaseUrl: https://example-oss-bucket.oss-cn-shanghai.aliyuncs.com
   r2:
-    endpoint: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
-    bucket: sit-portal-onwalk-net
+    bucket: { env: R2_BUCKET_NAME }
+    prefix: /
     region: auto
-    publicBaseUrl: https://e71be5efb76a6c54f78f008da4404f00.r2.cloudflarestorage.com
+    publicBaseUrl: { env: R2_PUBLIC_BASE_URL }
+    endpoint: { env: R2_ENDPOINT }
