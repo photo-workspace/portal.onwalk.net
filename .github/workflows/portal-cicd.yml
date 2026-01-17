@@ -1,0 +1,172 @@
+name: Portal CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        type: choice
+        options: [dev, prod]
+        default: dev
+      deploy_target:
+        description: "Deployment target"
+        type: choice
+        options: [portal, vm, container, k8s, all]
+        default: portal
+      image_tag:
+        description: "Container image tag (defaults to sha)"
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  NODE_VERSION: 24
+  REGISTRY: ghcr.io
+  IMAGE_NAME: portal
+
+jobs:
+  # -------------------------------------------------------------
+  # CI — Lint → Test → Build
+  # -------------------------------------------------------------
+  ci:
+    name: CI • Portal
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn test
+
+      - name: Build
+        run: yarn build
+
+  # -------------------------------------------------------------
+  # Container Build & Publish (main or dispatch)
+  # -------------------------------------------------------------
+  publish_container:
+    name: Publish Container Image
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name != 'pull_request'
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.image_tag || github.sha }}
+
+      - name: Record image
+        id: meta
+        run: |
+          echo "image=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.image_tag || github.sha }}" >> "$GITHUB_OUTPUT"
+
+  # -------------------------------------------------------------
+  # CD — Deploy (only workflow_dispatch)
+  # -------------------------------------------------------------
+  deploy_portal:
+    name: Deploy • Vercel
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'portal' || github.event.inputs.deploy_target == 'all')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npx --yes vercel@latest pull --yes --environment=${{ github.event.inputs.environment }} --token "$VERCEL_TOKEN"
+          npx --yes vercel@latest deploy --prod --force --token "$VERCEL_TOKEN"
+
+  deploy_vm:
+    name: Deploy • VM
+    runs-on: ubuntu-latest
+    needs: publish_container
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'vm' || github.event.inputs.deploy_target == 'all')
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          port: ${{ secrets.VM_PORT || 22 }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            echo "Pulling image ${{ needs.publish_container.outputs.image }}"
+            docker pull "${{ needs.publish_container.outputs.image }}"
+            ${VM_DEPLOY_COMMAND:-"echo 'Set VM_DEPLOY_COMMAND secret'"}
+
+  deploy_container:
+    name: Deploy • Container Runtime
+    runs-on: ubuntu-latest
+    needs: publish_container
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'container' || github.event.inputs.deploy_target == 'all')
+    steps:
+      - name: Placeholder
+        run: |
+          echo "Image published: ${{ needs.publish_container.outputs.image }}"
+          echo "Hook in ECS/Swarm/Compose rollout here"
+
+  deploy_k8s:
+    name: Deploy • K3S/K8S
+    runs-on: ubuntu-latest
+    needs: publish_container
+    if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'k8s' || github.event.inputs.deploy_target == 'all')
+    steps:
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          echo "$KUBECONFIG_B64" | base64 -d > "$HOME/.kube/config"
+
+      - name: Rollout
+        env:
+          IMAGE: ${{ needs.publish_container.outputs.image }}
+        run: |
+          echo "Deploying image $IMAGE"
+          echo "Hook in helm/kubectl apply here"

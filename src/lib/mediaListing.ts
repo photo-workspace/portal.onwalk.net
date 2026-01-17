@@ -138,7 +138,7 @@ export async function listMediaItems(
   const limit = options?.limit
 
   const storageItems = await listStorageItems(kind, sort)
-  const items = storageItems ?? (await listLocalItems(kind, sort))
+  const items = (storageItems && storageItems.length > 0) ? storageItems : (await listLocalItems(kind, sort))
 
   if (limit !== undefined) {
     return items.slice(0, limit)
