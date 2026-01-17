@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable @next/next/no-img-element */
 
-import { MessageCircle, Sparkles, Twitter } from 'lucide-react'
+import { MessageCircle, Twitter, Pin, Linkedin, Instagram } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
@@ -19,8 +19,10 @@ export default function SiteFooter() {
   const copy = useOnwalkCopy()
 
   const socials: SocialItem[] = [
+    { label: 'Pinterest', href: 'https://pinterest.com/haitaopanhq/', icon: Pin },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haitaopan/', icon: Linkedin },
+    { label: 'Instagram', href: '#', icon: Instagram },
     { label: copy.footer.socials.twitter, href: 'https://x.com/manbuzhe2023', icon: Twitter },
-    { label: copy.footer.socials.xiaohongshu, href: 'https://www.xiaohongshu.com/', icon: Sparkles },
     {
       label: copy.footer.socials.wechat,
       icon: MessageCircle,
