@@ -26,7 +26,9 @@ Optional environment variables:
   STORAGE_CACHE_CONTROL  Default Cache-Control metadata
 
 Examples:
+  # Upload local public/ into bucket/public
   $(basename "$0") --dry-run --prefix public
+  # Upload local public/ into bucket root
   $(basename "$0") --apply --delete-extra --cache-control "public, max-age=31536000"
 USAGE
 }
@@ -256,10 +258,6 @@ fi
 
 if [[ -n "${STORAGE_REGION}" ]]; then
   RCLONE_ENV+=("${REMOTE_ENV_PREFIX}_REGION=${STORAGE_REGION}")
-fi
-
-if [[ -z "${PREFIX}" && -n "${STORAGE_PREFIX}" ]]; then
-  PREFIX="${STORAGE_PREFIX}"
 fi
 
 if [[ -z "${PREFIX}" ]]; then
