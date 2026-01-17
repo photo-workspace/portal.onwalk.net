@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 
 import { onwalkSeoDescription, onwalkSeoTitle } from '@/lib/seo'
@@ -15,16 +16,21 @@ import SiteHeader from '@/components/SiteHeader'
 import VideoGrid from '@/components/VideoGrid'
 import HomeHero from '@/components/onwalk/HomeHero'
 import HomeSectionHeader from '@/components/onwalk/HomeSectionHeader'
-import { getContent, sortContentByDate } from '@/lib/content'
+import { getContent, sortContentByDate, filterPostsByLanguage } from '@/lib/content'
 import { getLatestPublicImages, getLatestPublicVideos } from '@/lib/publicMedia'
 
+export const dynamic = 'force-dynamic'
+
 export default async function HomePage() {
+  const cookieStore = await cookies()
+  const language = cookieStore.get('onwalk.language')?.value || 'zh'
+
   const [blogPosts, latestImages, latestVideos] = await Promise.all([
     getContent('blog'),
     getLatestPublicImages(5),
     getLatestPublicVideos(6),
   ])
-  const latestBlogs = sortContentByDate(blogPosts).slice(0, 3)
+  const latestBlogs = filterPostsByLanguage(blogPosts, language).slice(0, 3)
 
   return (
     <div className="relative min-h-screen bg-[#f9f9f9] text-[#1f1f1f]">

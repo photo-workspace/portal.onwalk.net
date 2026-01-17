@@ -7,7 +7,7 @@ import PostCard from '@/components/PostCard'
 import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import BlogHeader from '@/components/onwalk/BlogHeader'
-import { getContent, sortContentByDate, type ContentItem } from '@/lib/content'
+import { getContent, sortContentByDate, filterPostsByLanguage, type ContentItem } from '@/lib/content'
 
 
 export const dynamic = 'force-dynamic'
@@ -73,53 +73,6 @@ export async function generateMetadata({
     },
     ...(Object.keys(pagination).length > 0 ? { pagination } : {}),
   }
-}
-
-// Helper to filter posts by language
-function filterPostsByLanguage(posts: ContentItem[], language: string): ContentItem[] {
-  // 1. Group posts by their "base" slug
-  const groups = new Map<string, ContentItem[]>()
-
-  for (const post of posts) {
-    if (post.slug.includes('social/')) {
-      continue
-    }
-
-    // Check if slug ends with _en or _zh
-    const match = post.slug.match(/^(.*)_(en|zh)$/)
-    const baseSlug = match ? match[1] : post.slug
-
-    if (!groups.has(baseSlug)) {
-      groups.set(baseSlug, [])
-    }
-    groups.get(baseSlug)?.push(post)
-  }
-
-  const filtered: ContentItem[] = []
-
-  // 2. Select the best version for each group
-  for (const group of groups.values()) {
-    if (language === 'zh') {
-      // Strict Mode for ZH:
-      // Accept: `_zh` OR base (no suffix)
-      // Reject: `_en` only
-      const match = group.find(p => p.slug.endsWith('_zh')) || group.find(p => !p.slug.match(/_(en|zh)$/))
-      if (match) {
-        filtered.push(match)
-      }
-    } else {
-      // Strict Mode for EN:
-      // Accept: `_en`
-      // Reject: `_zh` or base (assuming base is default ZH, based on user context "Strict")
-      // If "base" is considered ZH, then EN users should NOT see it.
-      const match = group.find(p => p.slug.endsWith('_en'))
-      if (match) {
-        filtered.push(match)
-      }
-    }
-  }
-
-  return sortContentByDate(filtered)
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
