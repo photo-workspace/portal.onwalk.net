@@ -1,38 +1,65 @@
-export const runtime = 'nodejs'
+import fs from "node:fs/promises";
+import path from "node:path";
 
-const VIDEO_EXTENSIONS = new Set(['.mp4', '.mov', '.webm'])
-const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable'
+export const runtime = "nodejs";
+
+const VIDEO_EXTENSIONS = new Set([".mp4", ".mov", ".webm"]);
+const VIDEO_CONTENT_TYPES: Record<string, string> = {
+  ".mp4": "video/mp4",
+  ".mov": "video/quicktime",
+  ".webm": "video/webm",
+};
+const IMMUTABLE_CACHE = "public, max-age=31536000, immutable";
+const LOCAL_MEDIA_ROOT = path.join(process.cwd(), "public", "videos");
 
 function notFoundResponse(): Response {
   return new Response(null, {
     status: 404,
     headers: {
-      'Cache-Control': 'no-store',
+      "Cache-Control": "no-store",
     },
-  })
+  });
 }
 
 function isValidExtension(filename: string): boolean {
-  const dotIndex = filename.lastIndexOf('.')
+  const dotIndex = filename.lastIndexOf(".");
   if (dotIndex <= 0 || dotIndex === filename.length - 1) {
-    return false
+    return false;
   }
 
-  return VIDEO_EXTENSIONS.has(filename.slice(dotIndex).toLowerCase())
+  return VIDEO_EXTENSIONS.has(filename.slice(dotIndex).toLowerCase());
 }
 
 function buildKey(slug: string[]): string | null {
   if (slug.length === 0) {
-    return null
+    return null;
   }
 
-  const filename = slug[slug.length - 1]
+  const filename = slug[slug.length - 1];
   if (!isValidExtension(filename)) {
-    return null
+    return null;
   }
 
   // Allow arbitrary folder structure: public/videos/a/b/c/.../file.ext
-  return `public/videos/${slug.join('/')}`
+  return `public/videos/${slug.join("/")}`;
+}
+
+function buildLocalPath(slug: string[]): string | null {
+  if (slug.length === 0) {
+    return null;
+  }
+
+  const filename = slug[slug.length - 1];
+  if (!isValidExtension(filename)) {
+    return null;
+  }
+
+  return path.join(LOCAL_MEDIA_ROOT, ...slug);
+}
+
+function getContentType(filename: string): string {
+  const extension = path.extname(filename).toLowerCase();
+  return VIDEO_CONTENT_TYPES[extension] ?? "application/octet-stream";
 }
 
 function redirectResponse(url: string): Response {
@@ -40,32 +67,57 @@ function redirectResponse(url: string): Response {
     status: 302,
     headers: {
       Location: url,
-      'Cache-Control': IMMUTABLE_CACHE,
+      "Cache-Control": IMMUTABLE_CACHE,
     },
-  })
+  });
 }
 
 function resolveRangeHeader(_request: Request): string | null {
-  return null
+  return null;
 }
 
-export async function GET(request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
-  const { slug } = await params
-  const key = buildKey(slug)
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ slug: string[] }> },
+) {
+  const { slug } = await params;
+  const key = buildKey(slug);
   if (!key) {
-    return notFoundResponse()
+    return notFoundResponse();
   }
 
-  const baseUrl = process.env.R2_PUBLIC_BASE_URL?.trim()
+  const localPath = buildLocalPath(slug);
+  if (localPath) {
+    try {
+      const data = await fs.readFile(localPath);
+      const body = new Uint8Array(data);
+      return new Response(body, {
+        status: 200,
+        headers: {
+          "Cache-Control": IMMUTABLE_CACHE,
+          "Content-Type": getContentType(localPath),
+        },
+      });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+        throw error;
+      }
+    }
+  }
+
+  const baseUrl = process.env.R2_PUBLIC_BASE_URL?.trim();
   if (!baseUrl) {
-    return notFoundResponse()
+    return notFoundResponse();
   }
 
-  resolveRangeHeader(request)
-  const redirectUrl = `${baseUrl.replace(/\/+$/, '')}/${key}`
-  return redirectResponse(redirectUrl)
+  resolveRangeHeader(request);
+  const redirectUrl = `${baseUrl.replace(/\/+$/, "")}/${key}`;
+  return redirectResponse(redirectUrl);
 }
 
-export async function HEAD(request: Request, context: { params: Promise<{ slug: string[] }> }) {
-  return GET(request, context)
+export async function HEAD(
+  request: Request,
+  context: { params: Promise<{ slug: string[] }> },
+) {
+  return GET(request, context);
 }
