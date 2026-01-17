@@ -7,6 +7,11 @@ const args = process.argv.slice(2)
 const child = spawn('next', ['start', ...args], {
   stdio: 'inherit',
   shell: process.platform === 'win32',
+  env: {
+    ...process.env,
+    NODE_ENV: process.env.NODE_ENV ?? 'production',
+    ENABLE_LOCAL_MEDIA_FALLBACK: process.env.ENABLE_LOCAL_MEDIA_FALLBACK ?? 'false',
+  },
 })
 
 child.on('error', (error) => {

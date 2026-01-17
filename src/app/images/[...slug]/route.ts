@@ -1,6 +1,5 @@
 export const runtime = 'edge'
 
-const SCENES = new Set(['drone', 'landscape', 'citywalk', 'architecture', 'night', 'panorama'])
 const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.svg'])
 const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable'
 
@@ -23,24 +22,17 @@ function isValidExtension(filename: string): boolean {
 }
 
 function buildKey(slug: string[]): string | null {
-  if (slug.length !== 5) {
+  if (slug.length === 0) {
     return null
   }
 
-  const [country, province, city, scene, filename] = slug
-  if (!country || !province || !city || !scene || !filename) {
-    return null
-  }
-
-  if (!SCENES.has(scene)) {
-    return null
-  }
-
+  const filename = slug[slug.length - 1]
   if (!isValidExtension(filename)) {
     return null
   }
 
-  return `public/images/${country}/${province}/${city}/${scene}/${filename}`
+  // Allow arbitrary folder structure: public/images/a/b/c/.../file.ext
+  return `public/images/${slug.join('/')}`
 }
 
 function redirectResponse(url: string): Response {

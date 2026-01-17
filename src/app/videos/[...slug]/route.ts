@@ -1,6 +1,5 @@
 export const runtime = 'nodejs'
 
-const SCENES = new Set(['drone', 'landscape', 'citywalk', 'architecture', 'night', 'panorama'])
 const VIDEO_EXTENSIONS = new Set(['.mp4', '.mov', '.webm'])
 const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable'
 
@@ -23,24 +22,17 @@ function isValidExtension(filename: string): boolean {
 }
 
 function buildKey(slug: string[]): string | null {
-  if (slug.length !== 5) {
+  if (slug.length === 0) {
     return null
   }
 
-  const [country, province, city, scene, filename] = slug
-  if (!country || !province || !city || !scene || !filename) {
-    return null
-  }
-
-  if (!SCENES.has(scene)) {
-    return null
-  }
-
+  const filename = slug[slug.length - 1]
   if (!isValidExtension(filename)) {
     return null
   }
 
-  return `public/videos/${country}/${province}/${city}/${scene}/${filename}`
+  // Allow arbitrary folder structure: public/videos/a/b/c/.../file.ext
+  return `public/videos/${slug.join('/')}`
 }
 
 function redirectResponse(url: string): Response {

@@ -26,6 +26,25 @@ function getFilenameFromKey(key: string): string {
   return parts[parts.length - 1] || normalized
 }
 
+function normalizeStorageSlug(kind: MediaKind, key: string): string | null {
+  const normalized = key.replace(/\\/g, '/').replace(/^\/+/, '')
+  if (!normalized) {
+    return null
+  }
+
+  const publicPrefix = `public/${kind}/`
+  if (normalized.startsWith(publicPrefix)) {
+    return normalized.slice(publicPrefix.length)
+  }
+
+  const kindPrefix = `${kind}/`
+  if (normalized.startsWith(kindPrefix)) {
+    return normalized.slice(kindPrefix.length)
+  }
+
+  return normalized
+}
+
 async function getFilesRecursively(dir: string, extensions: Set<string>, rootDir: string = dir): Promise<string[]> {
   try {
     const entries = await fs.readdir(dir, { withFileTypes: true })
@@ -92,32 +111,33 @@ async function listStorageItems(kind: MediaKind, sort: MediaSort): Promise<Conte
     return null
   }
 
-  const client = await getStorageClient()
-  if (keys.length > 0 && !client.getPublicUrl(keys[0])) {
+  const baseUrl = process.env.R2_PUBLIC_BASE_URL?.trim()
+  if (!baseUrl) {
     return null
   }
-  const sorted = [...keys].sort((a, b) => {
+
+  const normalizedKeys = keys
+    .map((key) => ({ key, slug: normalizeStorageSlug(kind, key) }))
+    .filter((item): item is { key: string; slug: string } => Boolean(item.slug))
+
+  const sorted = [...normalizedKeys].sort((a, b) => {
     if (sort === 'name') {
-      return a.localeCompare(b, 'en')
+      return a.slug.localeCompare(b.slug, 'en')
     }
-    return b.localeCompare(a, 'en')
+    return b.slug.localeCompare(a.slug, 'en')
   })
 
   const items: ContentItem[] = []
-  for (const key of sorted) {
-    const url = client.getPublicUrl(key)
-    if (!url) {
-      continue
-    }
-
-    const filename = getFilenameFromKey(key)
-    const slug = filename.replace(/\.[^.]+$/, '')
-    const title = slugToTitle(slug)
+  for (const entry of sorted) {
+    const urlPath = `/${kind}/${entry.slug}`
+    const filename = getFilenameFromKey(entry.slug)
+    const titleSlug = filename.replace(/\.[^.]+$/, '')
+    const title = slugToTitle(titleSlug)
     items.push({
-      slug: key,
+      slug: entry.slug,
       title,
       content: '',
-      ...(kind === 'images' ? { cover: url } : { src: url }),
+      ...(kind === 'images' ? { cover: urlPath } : { src: urlPath }),
     })
   }
 
@@ -156,9 +176,19 @@ export async function listMediaItems(
   const sort = options?.sort ?? 'name'
   const limit = options?.limit
 
+  /*
+   * Environment Control for Local Media Fallback:
+   * - Development: Enabled by default (NODE_ENV !== 'production')
+   * - Production: Disabled by default (Strictly Object Storage)
+   * - Override: ENABLE_LOCAL_MEDIA_FALLBACK="true" forces it ON in any env.
+   */
+  const envEnableLocalRaw = process.env.ENABLE_LOCAL_MEDIA_FALLBACK
+  const isDev = process.env.NODE_ENV !== 'production'
+  const isLocalEnabled = envEnableLocalRaw === 'true' || envEnableLocalRaw === '1' || (envEnableLocalRaw === undefined && isDev)
+
   const [storageItems, localItems] = await Promise.all([
     listStorageItems(kind, sort),
-    listLocalItems(kind, sort)
+    isLocalEnabled ? listLocalItems(kind, sort) : Promise.resolve([]),
   ])
 
   const allItems = [...(storageItems ?? []), ...(localItems)]
