@@ -26,40 +26,52 @@ function getFilenameFromKey(key: string): string {
   return parts[parts.length - 1] || normalized
 }
 
-async function listLocalFiles(kind: MediaKind, sort: MediaSort): Promise<string[]> {
-  const directory = getLocalDir(kind)
-  const extensions = getExtensions(kind)
-
+async function getFilesRecursively(dir: string, extensions: Set<string>, rootDir: string = dir): Promise<string[]> {
   try {
-    const entries = await fs.readdir(directory, { withFileTypes: true })
-    const names = entries
-      .filter((entry) => entry.isFile())
-      .map((entry) => entry.name)
-      .filter((name) => extensions.has(path.extname(name).toLowerCase()))
+    const entries = await fs.readdir(dir, { withFileTypes: true })
+    let results: string[] = []
 
-    if (sort === 'name') {
-      return names.sort((a, b) => a.localeCompare(b, 'en'))
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        results = results.concat(await getFilesRecursively(fullPath, extensions, rootDir))
+      } else if (entry.isFile() && extensions.has(path.extname(entry.name).toLowerCase())) {
+        results.push(path.relative(rootDir, fullPath))
+      }
     }
-
-    const files = await Promise.all(
-      names.map(async (name) => {
-        const stats = await fs.stat(path.join(directory, name))
-        return { name, mtimeMs: stats.mtimeMs }
-      }),
-    )
-
-    return files
-      .sort((a, b) => {
-        if (b.mtimeMs !== a.mtimeMs) return b.mtimeMs - a.mtimeMs
-        return a.name.localeCompare(b.name, 'en')
-      })
-      .map((file) => file.name)
+    return results
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return []
     }
     throw error
   }
+}
+
+async function listLocalFiles(kind: MediaKind, sort: MediaSort): Promise<string[]> {
+  const directory = getLocalDir(kind)
+  const extensions = getExtensions(kind)
+
+  const names = await getFilesRecursively(directory, extensions)
+
+  if (sort === 'name') {
+    return names.sort((a, b) => a.localeCompare(b, 'en'))
+  }
+
+  // Need to get Stats for mtime sorting
+  const files = await Promise.all(
+    names.map(async (name) => {
+      const stats = await fs.stat(path.join(directory, name))
+      return { name, mtimeMs: stats.mtimeMs }
+    }),
+  )
+
+  return files
+    .sort((a, b) => {
+      if (b.mtimeMs !== a.mtimeMs) return b.mtimeMs - a.mtimeMs
+      return a.name.localeCompare(b.name, 'en')
+    })
+    .map((file) => file.name)
 }
 
 async function listStorageKeys(kind: MediaKind): Promise<string[] | null> {
@@ -113,12 +125,19 @@ async function listStorageItems(kind: MediaKind, sort: MediaSort): Promise<Conte
 }
 
 function buildLocalItem(kind: MediaKind, filename: string): ContentItem {
-  const slug = filename.replace(/\.[^.]+$/, '')
-  const title = slugToTitle(slug)
-  const url = `/${kind}/${filename}`
+  // filename is potentially a nested path e.g. "china/xinjiang/foo.jpg"
+  // For title, we want just the filename part to keep UI clean
+  const nameOnly = getFilenameFromKey(filename)
+  const titleSlug = nameOnly.replace(/\.[^.]+$/, '')
+  const title = slugToTitle(titleSlug)
+
+  // URL must include the full path
+  // Ensure we use forward slashes for URL even on Windows
+  const urlPath = filename.replace(/\\/g, '/')
+  const url = `/${kind}/${urlPath}`
 
   return {
-    slug: filename,
+    slug: filename, // Use full path as slug for uniqueness
     title,
     content: '',
     ...(kind === 'images' ? { cover: url } : { src: url }),
@@ -137,12 +156,32 @@ export async function listMediaItems(
   const sort = options?.sort ?? 'name'
   const limit = options?.limit
 
-  const storageItems = await listStorageItems(kind, sort)
-  const items = (storageItems && storageItems.length > 0) ? storageItems : (await listLocalItems(kind, sort))
+  const [storageItems, localItems] = await Promise.all([
+    listStorageItems(kind, sort),
+    listLocalItems(kind, sort)
+  ])
+
+  const allItems = [...(storageItems ?? []), ...(localItems)]
+
+  // Re-sort the combined list since they were sorted individually
+  // ContentItem.title is optional, so we use slug for consistent sorting
+  allItems.sort((a, b) => {
+    const valA = a.slug
+    const valB = b.slug
+
+    // Simple alpha sort on slug
+    if (sort === 'name') {
+      return valA.localeCompare(valB, 'en')
+    }
+
+    // For 'latest' or other sorts, we fallback to reverse alpha of slug
+    // because we don't have mtime for storage items easily available in ContentItem interface
+    return valB.localeCompare(valA, 'en')
+  })
 
   if (limit !== undefined) {
-    return items.slice(0, limit)
+    return allItems.slice(0, limit)
   }
 
-  return items
+  return allItems
 }
