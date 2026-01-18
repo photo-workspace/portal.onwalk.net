@@ -55,7 +55,62 @@
     "type": "video"
   },
   {
-    "path": "jiading.mp4",
+    "path": "china/jiangsu/苏州-虎丘湿地.MP4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/jiangsu/苏州.MP4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/jiading/citywalk/嘉定-孔庙.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/jiading/citywalk/嘉定-州桥.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/jiading/citywalk/嘉定-护国寺庙.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/jiading/citywalk/嘉定-汇龙潭公园.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/jiading/drone/嘉定北.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/shanghai/pudong/citywalk/临港-南汇公园.MP4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/xinjiang/nalati-grassland/那拉提草原.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/xinjiang/塞里木湖.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/xinjiang/新疆-独库公路.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/xinjiang/新疆-赛里木湖畔.mp4",
     "ext": "mp4",
     "type": "video"
   },
@@ -70,42 +125,12 @@
     "type": "video"
   },
   {
-    "path": "临港-南汇公园.MP4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
     "path": "台州-括苍山.mp4",
     "ext": "mp4",
     "type": "video"
   },
   {
-    "path": "嘉定-孔庙.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "嘉定-州桥.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "嘉定-护国寺庙.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "嘉定-汇龙潭公园.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "嘉定北.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "塞里木湖.mp4",
+    "path": "哈尔滨-圣索菲亚教堂.MP4",
     "ext": "mp4",
     "type": "video"
   },
@@ -121,16 +146,6 @@
   },
   {
     "path": "川西-九寨沟.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "新疆-独库公路.mp4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "新疆-赛里木湖畔.mp4",
     "ext": "mp4",
     "type": "video"
   },
@@ -180,7 +195,7 @@
     "type": "video"
   },
   {
-    "path": "那拉提草原.mp4",
+    "path": "苏州-寒山寺.MP4",
     "ext": "mp4",
     "type": "video"
   },

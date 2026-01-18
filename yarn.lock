@@ -7791,6 +7791,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-s3": "npm:^3.956.0"
     "@eslint/eslintrc": "npm:^3.1.0"
+    "@floating-ui/dom": "npm:^1.0.0"
     "@google-cloud/storage": "npm:^7.16.0"
     "@modelcontextprotocol/sdk": "npm:^1.0.0"
     "@opentelemetry/api": "npm:^1.9.0"
@@ -7839,6 +7840,7 @@ __metadata:
     eslint: "npm:^9.0.0"
     eslint-config-next: "npm:^16.1.1"
     gray-matter: "npm:^4.0.3"
+    hono: "npm:^4.0.0"
     html2canvas: "npm:^1.4.1"
     js-yaml: "npm:^4.1.0"
     jsdom: "npm:^26.0.0"
@@ -7871,6 +7873,7 @@ __metadata:
     tsx: "npm:^4.7.1"
     typescript: "npm:^5.4.2"
     vitest: "npm:^4.0.7"
+    zod: "npm:^3.25.0"
     zustand: "npm:^4.5.4"
   languageName: unknown
   linkType: soft
@@ -9812,6 +9815,13 @@ __metadata:
   dependencies:
     hermes-estree: "npm:0.25.1"
   checksum: 10/805efc05691420f236654349872c70731121791fa54de521c7ee51059eae34f84dd19f22ee846741dcb60372f8fb5335719b96b4ecb010d2aed7d872f2eff9cc
+  languageName: node
+  linkType: hard
+
+"hono@npm:^4.0.0":
+  version: 4.11.4
+  resolution: "hono@npm:4.11.4"
+  checksum: 10/c198a5779c6024ae0e643e30ea735cd1bd9d74ffec92c94076a99dc2f465aaaffd3d08be1cc67e50551e01d043eb159b64f43a7e7857fbc385d485177d0a0238
   languageName: node
   linkType: hard
 
@@ -15256,6 +15266,13 @@ __metadata:
   version: 4.3.5
   resolution: "zod@npm:4.3.5"
   checksum: 10/3148bd52e56ab7c1641ec397e6be6eddbb1d8f5db71e95baab9bb9622a0ea49d8a385885fc1c22b90fa6d8c5234e051f4ef5d469cfe3fb90198d5a91402fd89c
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.25.0":
+  version: 3.25.76
+  resolution: "zod@npm:3.25.76"
+  checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
   languageName: node
   linkType: hard
 

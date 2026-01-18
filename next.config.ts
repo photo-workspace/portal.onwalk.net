@@ -112,6 +112,14 @@ const nextConfig: NextConfig = {
         source: "/editor/:path*",
         destination: "http://localhost:4000/:path*",
       },
+      {
+        source: "/images/:path+",
+        destination: `${process.env.NEXT_PUBLIC_MEDIA_BASE_URL}/images/:path+`,
+      },
+      {
+        source: "/videos/:path+",
+        destination: `${process.env.NEXT_PUBLIC_MEDIA_BASE_URL}/videos/:path+`,
+      },
     ]
   },
 }
