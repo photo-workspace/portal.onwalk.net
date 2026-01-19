@@ -51,7 +51,7 @@ type MetaIndexGenerateArgs = {
   token?: string
 }
 
-const DEFAULT_MCP_ENDPOINT = 'https://www.onwalk.net/mcp_server_meta_index/'
+const DEFAULT_MCP_ENDPOINT = 'https://www.onwalk.net/mcp/'
 const MCP_AUTH_TOKEN = process.env.WEB_SITE_MCP_ACCESS_TOKEN?.trim()
 
 if (!MCP_AUTH_TOKEN) {

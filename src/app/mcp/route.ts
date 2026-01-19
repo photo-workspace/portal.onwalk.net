@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import crypto from 'node:crypto'
 
+export const dynamic = 'force-dynamic'
+
 import { syncMetaIndexToMarkdown } from '../../../scripts/meta-index-to-md'
 import {
   deleteMetaIndexEntry,
@@ -10,9 +12,11 @@ import {
   upsertMetaIndexEntry,
   type MetaIndexType,
 } from '../../../scripts/meta-index'
+import sitemap from '../sitemap'
+import { listMediaItems } from '@/lib/mediaListing'
 
 
-const DEFAULT_ENDPOINT = 'https://www.onwalk.net/mcp_server_meta_index/'
+const DEFAULT_ENDPOINT = 'https://www.onwalk.net/mcp/'
 const MCP_AUTH_TOKEN = process.env.WEB_SITE_MCP_ACCESS_TOKEN?.trim()
 
 type JsonRpcRequest = {
@@ -58,6 +62,10 @@ type MetaIndexGenerateArgs = {
   type: MetaIndexType | 'all'
 }
 
+type SiteIndexArgs = {
+  type: 'images' | 'videos' | 'blogs' | 'sitemap'
+}
+
 type Session = {
   controller: ReadableStreamDefaultController<Uint8Array>
   lastSeen: number
@@ -67,6 +75,17 @@ const encoder = new TextEncoder()
 const sessions = new Map<string, Session>()
 
 const tools = [
+  {
+    name: 'site.index',
+    description: 'Get site index for specific content types or the full sitemap.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        type: { type: 'string', enum: ['images', 'videos', 'blogs', 'sitemap'] },
+      },
+      required: ['type'],
+    },
+  },
   {
     name: 'meta_index_to_md',
     description:
@@ -196,6 +215,28 @@ async function handleToolsCall(params: Record<string, unknown>) {
   const args = (params?.arguments ?? {}) as Record<string, unknown>
 
   switch (name) {
+    case 'site.index': {
+      const payload = args as SiteIndexArgs
+      if (payload.type === 'images') {
+        const items = await listMediaItems('images')
+        return { content: [{ type: 'text', text: JSON.stringify(items, null, 2) }] }
+      }
+      if (payload.type === 'videos') {
+        const items = await listMediaItems('videos')
+        return { content: [{ type: 'text', text: JSON.stringify(items, null, 2) }] }
+      }
+      if (payload.type === 'sitemap') {
+        const result = await sitemap()
+        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
+      }
+      if (payload.type === 'blogs') {
+        // Reuse sitemap logic to get blog posts which are static files
+        const fullSitemap = await sitemap()
+        const blogs = fullSitemap.filter((item) => item.url.includes('/blogs/'))
+        return { content: [{ type: 'text', text: JSON.stringify(blogs, null, 2) }] }
+      }
+      throw new Error(`Unknown site.index type: ${payload.type}`)
+    }
     case 'meta_index_to_md': {
       const payload = args as MetaIndexToolArgs
       const results = await syncMetaIndexToMarkdown({
