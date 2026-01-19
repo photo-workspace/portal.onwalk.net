@@ -72,6 +72,11 @@ def main():
     # Ensure output directory exists
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    # Check if running on Vercel
+    if os.environ.get('VERCEL'):
+        print("Running on Vercel. Skipping media index generation to preserve repository files.")
+        return
+
     for category, config in MEDIA_TYPES.items():
         print(f"Scanning {category}...")
         items = generate_index(category, config)
