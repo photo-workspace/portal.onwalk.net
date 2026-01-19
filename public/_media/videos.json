@@ -15,11 +15,6 @@
     "type": "video"
   },
   {
-    "path": "_users_3b9b286c-320f-4c16-aa8f-9b45e5e3419c_generated_a3a070c5-b450-4d25-adbb-0083fcd13fbd_generated_video.MP4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
     "path": "_users_49ae0923-d10d-458a-9486-f22832998162_generated_460e7e1f-c558-4c9c-8546-ee2f0657bc52_generated_video.MP4",
     "ext": "mp4",
     "type": "video"
@@ -95,6 +90,16 @@
     "type": "video"
   },
   {
+    "path": "china/tianjin/binhai/drone/天津滨海新区.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
+    "path": "china/tianjin/central/drone/天津.mp4",
+    "ext": "mp4",
+    "type": "video"
+  },
+  {
     "path": "china/xinjiang/nalati-grassland/那拉提草原.mp4",
     "ext": "mp4",
     "type": "video"
@@ -115,12 +120,12 @@
     "type": "video"
   },
   {
-    "path": "上海-佘山.mp4",
+    "path": "china/上海-佘山.mp4",
     "ext": "mp4",
     "type": "video"
   },
   {
-    "path": "上海影视城.mp4",
+    "path": "china/上海影视城.mp4",
     "ext": "mp4",
     "type": "video"
   },
@@ -131,11 +136,6 @@
   },
   {
     "path": "哈尔滨-圣索菲亚教堂.MP4",
-    "ext": "mp4",
-    "type": "video"
-  },
-  {
-    "path": "天津滨海新区.mp4",
     "ext": "mp4",
     "type": "video"
   },

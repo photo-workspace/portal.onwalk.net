@@ -89,11 +89,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = await getContentBySlug('blog', slugPath)
 
   if (!post) {
-    return { title: '行摄笔记' }
+    return { title: '笔记' }
   }
 
   return {
-    title: post.title ?? '行摄笔记',
+    title: post.title ?? '笔记',
     description: getDescriptionText(post),
   }
 }
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
-    headline: post.title ?? '行摄笔记',
+    headline: post.title ?? '笔记',
     datePublished: post.date,
     dateModified: post.date,
     description,

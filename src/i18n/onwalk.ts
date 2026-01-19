@@ -108,9 +108,9 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       title: '行者影像',
       nav: {
         home: '首页',
-        image: '一图一文',
-        video: '一图一视频',
-        blog: '行摄笔记',
+        image: '瞬间',
+        video: '影像',
+        blog: '笔记',
         about: '关于',
       },
     },
@@ -140,15 +140,15 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       },
       sections: {
         blog: {
-          title: '行摄笔记',
+          title: '笔记',
           subtitle: '影像为入口，文字为结构',
         },
         image: {
-          title: '一图一文',
+          title: '瞬间',
           subtitle: '胶片式浏览',
         },
         video: {
-          title: '一图一视频',
+          title: '影像',
           subtitle: '剧场式观看',
         },
       },
@@ -165,7 +165,7 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
     },
     blog: {
       overview: {
-        eyebrow: '行摄笔记',
+        eyebrow: '笔记',
         title: '以文字整理影像里的路径',
         subtitle: '深度阅读与影像观察共存的地方。',
       },
@@ -191,15 +191,15 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
           subtitle: '用影像先行，再用文字收束。',
         },
       },
-      backLabel: '← 返回行摄笔记',
+      backLabel: '← 返回笔记',
     },
     image: {
-      eyebrow: '一图一文',
+      eyebrow: '瞬间',
       title: '以影像为入口的单页阅读',
       subtitle: '每一张照片对应一段文字，让图像延续成叙事。',
     },
     video: {
-      eyebrow: '一图一视频',
+      eyebrow: '影像',
       title: '影像剧场',
       subtitle: '通过短片补充照片的呼吸与节奏。',
       empty: '暂无视频',
