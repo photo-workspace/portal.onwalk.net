@@ -2,6 +2,7 @@ models/
 *.tsbuildinfo
 .dev-logs/
 .env
+public/_media/*.cache.json
 
 # macOS
 .DS_Store
@@ -67,3 +68,6 @@ target/
 
 .gemini/
 gha-creds-*.json
+
+# Media Cache
+public/_media/*.cache.json

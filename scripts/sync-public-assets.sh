@@ -163,6 +163,14 @@ resolve_runtime_config_value() {
   if [[ -z "${value}" && -f "${base_file}" ]]; then
     value="$(yaml_get "${base_file}" "${key}")"
   fi
+
+  # Handle { env: VAR } syntax
+  if [[ "${value}" =~ ^\{\ env:\ ([a-zA-Z0-9_]+)\ \}$ ]]; then
+     local var_name="${BASH_REMATCH[1]}"
+     # Use indirect expansion to get the value of the variable named by var_name
+     value="${!var_name:-}" 
+  fi
+  
   echo "${value}"
 }
 

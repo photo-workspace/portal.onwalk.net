@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable @next/next/no-img-element */
 
-import { MessageCircle, Twitter, Pin, Linkedin, Instagram } from 'lucide-react'
+import { Twitter, Pin, Linkedin, Instagram } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
@@ -23,17 +23,7 @@ export default function SiteFooter() {
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haitaopan/', icon: Linkedin },
     { label: 'Instagram', href: '#', icon: Instagram },
     { label: copy.footer.socials.twitter, href: 'https://x.com/manbuzhe2023', icon: Twitter },
-    {
-      label: copy.footer.socials.wechat,
-      icon: MessageCircle,
-      qrImage: (() => {
-        let base = process.env.NEXT_PUBLIC_MEDIA_BASE_URL || ''
-        if (base.endsWith('/')) base = base.slice(0, -1)
-        return `${base}/images/contact/wechat-official.jpg`
-      })(),
-      qrAlt: copy.footer.socials.wechatQrAlt,
-      qrHint: copy.footer.socials.wechatQrHint,
-    },
+
   ]
 
   return (

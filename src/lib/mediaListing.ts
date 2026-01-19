@@ -16,9 +16,13 @@ interface MediaIndexItem {
   views?: number
 }
 
+export function getMediaIndexPath(kind: MediaKind): string {
+  return path.join(process.cwd(), 'public', '_media', `${kind}.json`)
+}
+
 async function readMediaIndex(kind: MediaKind): Promise<MediaIndexItem[]> {
   try {
-    const indexPath = path.join(process.cwd(), 'public', '_media', `${kind}.json`)
+    const indexPath = getMediaIndexPath(kind)
     const content = await fs.readFile(indexPath, 'utf-8')
     return JSON.parse(content)
   } catch (error) {
