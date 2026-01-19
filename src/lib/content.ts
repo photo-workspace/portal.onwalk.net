@@ -58,17 +58,24 @@ async function readMarkdownFiles(type: ContentType): Promise<ContentItem[]> {
 
   const items = await Promise.all(
     entries.map(async (entry) => {
-      const raw = await fs.readFile(entry.filePath, 'utf8')
-      const { data, content } = matter(raw)
-      return {
-        slug: entry.slug,
-        ...(data as Record<string, unknown>),
-        content,
-      } as ContentItem
+      try {
+        const raw = await fs.readFile(entry.filePath, 'utf8')
+        const { data, content } = matter(raw)
+        return {
+          slug: entry.slug,
+          ...(data as Record<string, unknown>),
+          content,
+        } as ContentItem
+      } catch (error) {
+        console.error(`Error reading markdown file: ${entry.filePath}`, error)
+        return null
+      }
     }),
   )
 
-  return items.sort((a, b) => a.slug.localeCompare(b.slug))
+  return items
+    .filter((item): item is ContentItem => item !== null)
+    .sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
 export const getContent = async (type: ContentType): Promise<ContentItem[]> => {
