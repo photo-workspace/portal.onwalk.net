@@ -11,6 +11,7 @@ import PageHeader from '@/components/onwalk/PageHeader'
 import type { ContentItem } from '@/lib/content'
 import { useOnwalkCopy } from '@/i18n/useOnwalkCopy'
 import { copyToClipboard } from '@/lib/clipboard'
+import MediaDetailModal from '@/components/MediaDetailModal'
 
 type ImagesGalleryProps = {
   items: ContentItem[]
@@ -45,6 +46,7 @@ export default function ImagesGallery({
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
   const [pageIndex, setPageIndex] = useState(currentPage ? currentPage - 1 : 0)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null)
 
   const handleSort = (newSort: 'latest' | 'location' | 'views') => {
     if (sort === newSort) {
@@ -148,7 +150,8 @@ export default function ImagesGallery({
               {currentItems.map((item) => (
                 <article
                   key={item.slug}
-                  className="group relative mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_28px_-24px_rgba(15,23,42,0.4)]"
+                  className="group relative mb-6 break-inside-avoid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_12px_28px_-24px_rgba(15,23,42,0.4)] cursor-pointer"
+                  onClick={() => setSelectedItem(item)}
                 >
                   <button
                     onClick={(e) => handleCopyMarkdown(e, item)}
@@ -274,6 +277,15 @@ export default function ImagesGallery({
       >
         {copy.image.markdownCopied}
       </div>
+
+      {selectedItem && (
+        <MediaDetailModal
+          item={selectedItem}
+          isOpen={!!selectedItem}
+          onClose={() => setSelectedItem(null)}
+          type="image"
+        />
+      )}
     </div>
   )
 }
