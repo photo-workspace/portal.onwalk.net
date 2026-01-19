@@ -11,7 +11,7 @@ export const getLatestPublicImages = unstable_cache(
       title: item.title || `Image ${index + 1}`,
     }))
   },
-  ['latest-public-images'],
+  ['latest-public-images-v2'],
 )
 
 export const getLatestPublicVideos = unstable_cache(
@@ -22,5 +22,5 @@ export const getLatestPublicVideos = unstable_cache(
       title: item.title || `Video ${index + 1}`,
     }))
   },
-  ['latest-public-videos'],
+  ['latest-public-videos-v2'],
 )
