@@ -7,20 +7,16 @@ import SiteFooter from '@/components/SiteFooter'
 import { BreadcrumbJsonLd } from '@/components/BreadcrumbJsonLd'
 
 type Props = {
-    params: Promise<{ slug: string }>
+    params: Promise<{ slug: string[] }>
 }
 
-export async function generateStaticParams() {
-    const videos = await getPublicVideos()
-    return videos.map((video) => ({
-        slug: video.slug,
-    }))
-}
+
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
+    const fullPath = slug.join('/')
     const videos = await getPublicVideos()
-    const video = videos.find((v) => v.slug === slug)
+    const video = videos.find((v) => v.slug === fullPath)
 
     if (!video) {
         return {
@@ -28,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
     }
 
-    const title = video.title || video.slug
+    const title = video.title || video.slug.split('/').pop() || 'Video'
     const description = video.location
         ? `Video taken at ${Array.isArray(video.location) ? video.location.join(', ') : video.location}`
         : `Video: ${title}`
@@ -44,36 +40,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             images: video.poster ? [{ url: video.poster }] : [],
         },
         alternates: {
-            canonical: `/videos/${encodeURIComponent(video.slug)}`,
+            canonical: `/videos/${fullPath}`,
         },
     }
 }
 
 export default async function VideoPage({ params }: Props) {
     const { slug } = await params
+    const fullPath = slug.join('/')
     const videos = await getPublicVideos()
-    const video = videos.find((v) => v.slug === slug)
+    const video = videos.find((v) => v.slug === fullPath)
 
     if (!video) {
         notFound()
     }
 
-    // Ensure these are absolute URLs for Schema.org
-    // Assuming src/poster are relative path or full URL. 
-    // If they are relative like /videos/..., we might need to prepend base URL if not already there, 
-    // but Schema usually prefers absolute. 
-    // However, the user request says "embedUrl: NEXT_PUBLIC_MEDIA_BASE_URL + path"
-    // In `lib/mediaListing.ts`, `src` is already constructed as `${baseUrl}/${item.path}`.
-
     const videoData = {
-        title: video.title || video.slug,
+        title: video.title || video.slug.split('/').pop() || 'Video',
         description: video.location
             ? `Location: ${Array.isArray(video.location) ? video.location.join(', ') : video.location}`
             : `Video content: ${video.title || video.slug}`,
-        thumbnailUrl: video.poster || '', // formatted as absolute in lib
-        uploadDate: video.updatedAt || new Date().toISOString(), // Fallback if missing
-        contentUrl: video.src || '', // formatted as absolute in lib
-        embedUrl: video.src || '', // Using direct link as embedUrl per user request/nature of these files
+        thumbnailUrl: video.poster || '',
+        uploadDate: video.updatedAt || new Date().toISOString(),
+        contentUrl: video.src || '',
+        embedUrl: video.src || '',
     }
 
     const jsonLd = {
@@ -95,7 +85,7 @@ export default async function VideoPage({ params }: Props) {
                 <BreadcrumbJsonLd items={[
                     { name: 'Home', path: '/' },
                     { name: 'Videos', path: '/videos' },
-                    { name: videoData.title || 'Video', path: `/videos/${encodeURIComponent(slug)}` }
+                    { name: videoData.title, path: `/videos/${fullPath}` }
                 ]} />
                 {/* JSON-LD for SEO */}
                 <script

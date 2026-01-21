@@ -72,7 +72,7 @@ const getContentEntries = async (
     try {
       const items = await listMediaItems(section.mediaKind, { sort: 'name' })
       return items.map((item) => ({
-        url: `${baseUrl}/${section.route}/${encodeURIComponent(item.slug)}`,
+        url: `${baseUrl}/${section.route}/${item.slug.split('/').map(s => encodeURIComponent(s)).join('/')}`,
         // media items don't strictly have mtime in ContentItem, defaulting to undefined (omit lastModified)
         // or we could use current date if needed, but omitted is safer for now.
         changeFrequency: section.changeFrequency,

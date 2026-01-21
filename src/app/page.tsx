@@ -39,13 +39,6 @@ export default async function HomePage() {
         <HomeHero />
 
         <section className="space-y-6">
-          <HomeSectionHeader section="blog" />
-          <div className="rounded-large border border-border bg-surface p-6 shadow-sm">
-            <MasonryGrid posts={latestBlogs} />
-          </div>
-        </section>
-
-        <section className="space-y-6">
           <HomeSectionHeader section="image" />
           <div className="rounded-large border border-border bg-surface p-6 shadow-sm">
             <ImageCarousel items={latestImages} />
@@ -64,6 +57,13 @@ export default async function HomePage() {
             >
               更多
             </Link>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <HomeSectionHeader section="blog" />
+          <div className="rounded-large border border-border bg-surface p-6 shadow-sm">
+            <MasonryGrid posts={latestBlogs} />
           </div>
         </section>
       </main>
