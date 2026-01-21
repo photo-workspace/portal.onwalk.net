@@ -12,8 +12,8 @@ export default function Navbar() {
   const pathname = usePathname()
   const isHiddenRoute = pathname
     ? ['/xstream', '/xcloudflow', '/xscopehub', '/blogs'].some((prefix) =>
-        pathname.startsWith(prefix),
-      )
+      pathname.startsWith(prefix),
+    )
     : false
   const [menuOpen, setMenuOpen] = useState(false)
   const navRef = useRef<HTMLElement | null>(null)
@@ -90,7 +90,7 @@ export default function Navbar() {
             <div className="flex flex-1 items-center gap-5">
               <Link href="/" className="flex items-center gap-2 rounded-md border border-white/5 bg-slate-900/60 px-2.5 py-1.5 text-sm font-medium text-white/90 transition hover:bg-slate-800/60">
                 <Image
-                  src="/icons/cloudnative_32.png"
+                  src="/icons/onwalk-net-logo.png"
                   alt="logo"
                   width={24}
                   height={24}
