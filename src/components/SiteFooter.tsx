@@ -19,10 +19,10 @@ export default function SiteFooter() {
   const copy = useOnwalkCopy()
 
   const socials: SocialItem[] = [
+    { label: 'X', href: 'https://x.com/OnWalkNotes', icon: Twitter },
     { label: 'Pinterest', href: 'https://pinterest.com/haitaopanhq/', icon: Pin },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/haitaopan/', icon: Linkedin },
-    { label: 'Instagram', href: '#', icon: Instagram },
-    { label: copy.footer.socials.twitter, href: 'https://x.com/manbuzhe2023', icon: Twitter },
+    { label: 'Instagram', href: 'https://www.instagram.com/haitaopanhq/', icon: Instagram },
 
   ]
 

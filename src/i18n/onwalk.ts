@@ -133,8 +133,8 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       hero: {
         badge: 'Index',
         tagline: '影像为入口 · 文字为结构',
-        title: '一个可长期生长的影像与思想档案',
-        description: '记录城市与山野的影像实践，让每一段图像有清晰的文字骨架。',
+        title: '分享自然之美与旅程笔记',
+        description: '捕捉光影的永恒之舞，通过镜头让转瞬即逝的时刻成为不朽。',
         chips: {
           featured: '影像聚合',
           moments: 'Moments',
@@ -153,7 +153,7 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
         },
         video: {
           title: '影像',
-          subtitle: '剧场式观看',
+          subtitle: '沉浸式观看',
         },
       },
     },
@@ -242,8 +242,8 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       hero: {
         badge: 'Index',
         tagline: 'Images as the entry · Words as the structure',
-        title: 'A growing archive of images and ideas',
-        description: 'Documenting visual journeys across cities and wilds, giving each image a clear textual frame.',
+        title: 'Sharing the Beauty of Nature & Journeys',
+        description: 'Capturing the eternal dance of light and shadow, immortalizing the fleeting moment.',
         chips: {
           featured: 'Image Collection',
           moments: 'Moments',
@@ -262,7 +262,7 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
         },
         video: {
           title: 'Theater',
-          subtitle: 'Theater-style viewing',
+          subtitle: 'Immersive viewing',
         },
       },
     },
