@@ -20,8 +20,8 @@ icon:
 		exit 1; \
 	fi
 	@mkdir -p public/icons
-	@$(MAGICK) ../ui/logo.png -resize 32x32 public/icons/cloudnative_32.png
-	@$(MAGICK) ../ui/logo.png -resize 64x64 -background none -define icon:auto-resize=64,48,32,16 public/favicon.ico
+	@$(MAGICK) public/icons/onwalk-net-logo.png -resize 32x32 public/icons/favicon-32x32.png
+	@$(MAGICK) public/icons/onwalk-net-logo.png -resize 64x64 -background none -define icon:auto-resize=64,48,32,16 public/favicon.ico
 	@echo "✅ Icons generated successfully."
 
 init:
