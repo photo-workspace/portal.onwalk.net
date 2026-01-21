@@ -56,12 +56,27 @@ export async function listMediaItems(
     // Note: item.path now includes the category prefix (e.g. "images/foo.jpg")
     const url = `${baseUrl}/${item.path}`
 
+    // Slug for the page URL (removes extension)
+    // item.path is like "videos/china/vlog.mp4"
+    // We want "china/vlog" if "videos/" is handled by baseUrl
+    // Step 1: Remove extension
+    let slug = item.path.replace(/\.[^/.]+$/, "")
+
+    // Step 2: Remove the top-level directory if it matches the current kind (e.g. "videos/")
+    // This prevents URLs like /videos/videos/china/...
+    if (slug.startsWith(`${kind}/`)) {
+      slug = slug.slice(kind.length + 1)
+    } else if (slug === kind) {
+      // e.g. path is just "videos" (unlikely for a file, but for safety)
+      slug = ""
+    }
+
     // Title from filename (simple heuristic)
     const filename = path.basename(item.path)
     const title = filename.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim()
 
     return {
-      slug: item.path,
+      slug,
       title,
       updatedAt: item.updatedAt,
       location: item.location,

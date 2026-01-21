@@ -18,6 +18,7 @@ type ImagesGalleryProps = {
   currentPage?: number
   totalPages?: number
   totalImages?: number
+  initialSlug?: string
 }
 
 const PAGE_SIZE = 12
@@ -39,14 +40,20 @@ export default function ImagesGallery({
   items,
   currentPage,
   totalPages: externalTotalPages,
-  totalImages: externalTotalImages
+  totalImages: externalTotalImages,
+  initialSlug
 }: ImagesGalleryProps) {
   const copy = useOnwalkCopy()
   const [sort, setSort] = useState<'latest' | 'location' | 'views'>('latest')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
   const [pageIndex, setPageIndex] = useState(currentPage ? currentPage - 1 : 0)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
-  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null)
+  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(() => {
+    if (initialSlug) {
+      return items.find(i => i.slug === initialSlug) || null
+    }
+    return null
+  })
 
   const handleSort = (newSort: 'latest' | 'location' | 'views') => {
     if (sort === newSort) {
