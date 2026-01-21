@@ -31,7 +31,7 @@ const sections: ContentSection[] = [
   },
   {
     folder: 'videos',
-    route: 'videos',
+    route: 'videos', // Points to the Next.js page at /videos/[slug]
     changeFrequency: 'monthly',
     priority: 0.6,
     isMedia: true,

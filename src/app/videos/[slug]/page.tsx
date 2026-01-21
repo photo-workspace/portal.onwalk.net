@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getPublicVideos } from '@/lib/video'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
+import { BreadcrumbJsonLd } from '@/components/BreadcrumbJsonLd'
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -41,6 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             type: 'video.other',
             videos: [{ url: video.src || '', width: 1280, height: 720 }],
             images: video.poster ? [{ url: video.poster }] : [],
+        },
+        alternates: {
+            canonical: `/videos/${video.slug}`,
         },
     }
 }
@@ -88,6 +92,11 @@ export default async function VideoPage({ params }: Props) {
             <SiteHeader />
 
             <main className="flex-grow w-full max-w-5xl mx-auto px-4 py-8 flex flex-col items-center">
+                <BreadcrumbJsonLd items={[
+                    { name: 'Home', path: '/' },
+                    { name: 'Videos', path: '/videos' },
+                    { name: videoData.title || 'Video', path: `/videos/${slug}` }
+                ]} />
                 {/* JSON-LD for SEO */}
                 <script
                     type="application/ld+json"

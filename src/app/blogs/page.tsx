@@ -10,6 +10,7 @@ import SiteFooter from '@/components/SiteFooter'
 import SiteHeader from '@/components/SiteHeader'
 import BlogHeader from '@/components/onwalk/BlogHeader'
 import { getContent, sortContentByDate, filterPostsByLanguage, type ContentItem } from '@/lib/content'
+import { BreadcrumbJsonLd } from '@/components/BreadcrumbJsonLd'
 
 
 export const dynamic = 'force-dynamic'
@@ -112,6 +113,10 @@ export default async function BlogPage({ searchParams }: PageProps) {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
       <main className="mx-auto w-full max-w-6xl px-6 pb-20">
+        <BreadcrumbJsonLd items={[
+          { name: 'Home', path: '/' },
+          { name: 'Blogs', path: '/blogs' }
+        ]} />
         <BlogHeader variant="overview" activeHref="/blogs" />
 
         <div className="space-y-12">
