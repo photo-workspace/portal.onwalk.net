@@ -99,15 +99,15 @@ export async function generateMetadata({
     ...(Object.keys(pagination).length > 0 ? { pagination } : {}),
     ...(shouldNoIndex
       ? {
-          robots: {
+        robots: {
+          index: false,
+          follow: true,
+          googleBot: {
             index: false,
             follow: true,
-            googleBot: {
-              index: false,
-              follow: true,
-            },
           },
-        }
+        },
+      }
       : {}),
   };
 
@@ -143,7 +143,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-6 pb-20">
+      <main className="mx-auto w-full max-w-7xl px-6 pb-20">
         <BreadcrumbJsonLd
           items={[
             { name: "Home", path: "/" },

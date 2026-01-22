@@ -110,7 +110,7 @@ export default async function VideosPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-6 pb-20">
+      <main className="mx-auto w-full max-w-7xl px-6 pb-20">
         <PageHeader variant="video" />
         {/* 视频画廊结构化数据 */}
         <script
