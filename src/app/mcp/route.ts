@@ -77,7 +77,7 @@ const sessions = new Map<string, Session>()
 const tools = [
   {
     name: 'site.index',
-    description: 'Get site index for specific content types or the full sitemap.',
+    description: 'Get comprehensive site index with metadata and statistics for specific content types (images, videos, blogs) or the full sitemap. Returns summaries, counts, and recent updates.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -219,21 +219,80 @@ async function handleToolsCall(params: Record<string, unknown>) {
       const payload = args as SiteIndexArgs
       if (payload.type === 'images') {
         const items = await listMediaItems('images')
-        return { content: [{ type: 'text', text: JSON.stringify(items, null, 2) }] }
+        const summary = {
+          total: items.length,
+          withLocation: items.filter(i => i.location).length,
+          recentUpdates: items
+            .filter(i => i.updatedAt)
+            .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
+            .slice(0, 10)
+            .map(i => ({ slug: i.slug, title: i.title, updatedAt: i.updatedAt })),
+        }
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({ summary, items }, null, 2)
+          }]
+        }
       }
       if (payload.type === 'videos') {
         const items = await listMediaItems('videos')
-        return { content: [{ type: 'text', text: JSON.stringify(items, null, 2) }] }
+        const summary = {
+          total: items.length,
+          withLocation: items.filter(i => i.location).length,
+          recentUpdates: items
+            .filter(i => i.updatedAt)
+            .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
+            .slice(0, 10)
+            .map(i => ({ slug: i.slug, title: i.title, updatedAt: i.updatedAt })),
+        }
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({ summary, items }, null, 2)
+          }]
+        }
       }
       if (payload.type === 'sitemap') {
         const result = await sitemap()
-        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
+        const summary = {
+          total: result.length,
+          byChangeFrequency: result.reduce((acc, item) => {
+            const freq = item.changeFrequency || 'unknown'
+            acc[freq] = (acc[freq] || 0) + 1
+            return acc
+          }, {} as Record<string, number>),
+          byPriority: result.reduce((acc, item) => {
+            const priority = String(item.priority || 0.5)
+            acc[priority] = (acc[priority] || 0) + 1
+            return acc
+          }, {} as Record<string, number>),
+        }
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({ summary, sitemap: result }, null, 2)
+          }]
+        }
       }
       if (payload.type === 'blogs') {
         // Reuse sitemap logic to get blog posts which are static files
         const fullSitemap = await sitemap()
         const blogs = fullSitemap.filter((item) => item.url.includes('/blogs/'))
-        return { content: [{ type: 'text', text: JSON.stringify(blogs, null, 2) }] }
+        const summary = {
+          total: blogs.length,
+          recentUpdates: blogs
+            .filter(b => b.lastModified)
+            .sort((a, b) => new Date(b.lastModified!).getTime() - new Date(a.lastModified!).getTime())
+            .slice(0, 10)
+            .map(b => ({ url: b.url, lastModified: b.lastModified })),
+        }
+        return {
+          content: [{
+            type: 'text',
+            text: JSON.stringify({ summary, blogs }, null, 2)
+          }]
+        }
       }
       throw new Error(`Unknown site.index type: ${payload.type}`)
     }

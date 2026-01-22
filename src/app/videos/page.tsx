@@ -12,6 +12,19 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/videos',
   },
+  openGraph: {
+    title: '视频 | Onwalk',
+    description: 'Onwalk 视频集，记录户外、航拍与行走的影像故事。',
+    url: 'https://www.onwalk.net/videos',
+    siteName: 'Onwalk',
+    locale: 'zh_CN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '视频 | Onwalk',
+    description: 'Onwalk 视频集，记录户外、航拍与行走的影像故事。',
+  },
 }
 
 export default async function VideosPage() {

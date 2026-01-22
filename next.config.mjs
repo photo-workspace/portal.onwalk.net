@@ -115,6 +115,16 @@ export async function redirects() {
 
 export async function rewrites() {
   return [
+    // Media asset proxies to CDN
+    {
+      source: '/videos/:path*',
+      destination: 'https://assets.onwalk.net/videos/:path*',
+    },
+    {
+      source: '/image/:path*',
+      destination: 'https://assets.onwalk.net/image/:path*',
+    },
+    // Editor proxies (development)
     {
       source: '/editor',
       destination: 'http://localhost:4000',

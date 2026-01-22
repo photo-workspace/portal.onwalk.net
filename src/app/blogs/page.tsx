@@ -1,123 +1,160 @@
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
-import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
-import Link from 'next/link'
+import BlogInfiniteList from "@/components/BlogInfiniteList";
+import SiteFooter from "@/components/SiteFooter";
+import SiteHeader from "@/components/SiteHeader";
+import BlogHeader from "@/components/onwalk/BlogHeader";
+import {
+  getContent,
+  sortContentByDate,
+  filterPostsByLanguage,
+  getBlogCategories,
+  type ContentItem,
+} from "@/lib/content";
+import { BreadcrumbJsonLd } from "@/components/BreadcrumbJsonLd";
 
-import PostCard from '@/components/PostCard'
-import HeroPostCard from '@/components/HeroPostCard'
-import BlogInfiniteList from '@/components/BlogInfiniteList'
-import SiteFooter from '@/components/SiteFooter'
-import SiteHeader from '@/components/SiteHeader'
-import BlogHeader from '@/components/onwalk/BlogHeader'
-import { getContent, sortContentByDate, filterPostsByLanguage, type ContentItem } from '@/lib/content'
-import { BreadcrumbJsonLd } from '@/components/BreadcrumbJsonLd'
+// Enable ISR with revalidation to improve SEO while keeping content fresh
+export const dynamic = "force-static";
+export const revalidate = 3600; // Revalidate every hour
 
-
-export const dynamic = 'force-dynamic'
-
-const HERO_PAGE_SIZE = 7 // 1 Hero + 6 Grid items (2 cols * 3 rows)
-const STD_PAGE_SIZE = 6  // 6 Grid items (2 cols * 3 rows)
+const HERO_PAGE_SIZE = 7; // 1 Hero + 6 Grid items (2 cols * 3 rows)
+const STD_PAGE_SIZE = 6; // 6 Grid items (2 cols * 3 rows)
 
 const baseMetadata: Metadata = {
-  title: '博客 | Onwalk',
-  description: 'Onwalk 博客，记录行走、摄影与城市观察的故事与更新。',
+  title: "博客 | Onwalk",
+  description: "Onwalk 博客，记录行走、摄影与城市观察的故事与更新。",
   alternates: {
-    canonical: '/blogs',
+    canonical: "/blogs",
   },
-}
+  openGraph: {
+    title: "博客 | Onwalk",
+    description: "Onwalk 博客，记录行走、摄影与城市观察的故事与更新。",
+    url: "https://www.onwalk.net/blogs",
+    siteName: "Onwalk",
+    locale: "zh_CN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "博客 | Onwalk",
+    description: "Onwalk 博客，记录行走、摄影与城市观察的故事与更新。",
+  },
+};
 
 type PageProps = {
-  searchParams?: Promise<{ page?: string }> | { page?: string }
-}
+  searchParams?: Promise<{ page?: string }> | { page?: string };
+};
 
 async function resolvePagination(
-  searchParams: PageProps['searchParams'],
+  searchParams: PageProps["searchParams"],
   totalPosts: number,
 ) {
-  const resolvedSearchParams = (await Promise.resolve(searchParams)) ?? {}
-  const page = Number(resolvedSearchParams.page ?? 1)
-  const safePage = Number.isFinite(page) && page > 0 ? page : 1
+  const resolvedSearchParams = (await Promise.resolve(searchParams)) ?? {};
+  const page = Number(resolvedSearchParams.page ?? 1);
+  const safePage = Number.isFinite(page) && page > 0 ? page : 1;
 
   // Calculate total pages logic with variable first page
-  const remainingAfterFirst = Math.max(0, totalPosts - HERO_PAGE_SIZE)
-  const additionalPages = Math.ceil(remainingAfterFirst / STD_PAGE_SIZE)
-  const totalPages = 1 + additionalPages
+  const remainingAfterFirst = Math.max(0, totalPosts - HERO_PAGE_SIZE);
+  const additionalPages = Math.ceil(remainingAfterFirst / STD_PAGE_SIZE);
+  const totalPages = 1 + additionalPages;
 
-  const currentPage = Math.min(safePage, totalPages)
+  const currentPage = Math.min(safePage, totalPages);
 
-  return { currentPage, totalPages }
+  return { currentPage, totalPages };
 }
 
 export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const posts = sortContentByDate(await getContent('blog'))
-  // Note: we can't easily filter by language in metadata generation without duplicating logic
-  // keeping it simple for now as metadata doesn't strictly depend on language filtering for counts
+  const posts = sortContentByDate(await getContent("blog"));
   const { currentPage, totalPages } = await resolvePagination(
     searchParams,
     posts.length,
-  )
-  const basePath = '/blogs'
+  );
+  const basePath = "/blogs";
   const previous =
-    currentPage > 1 ? `${basePath}?page=${currentPage - 1}` : undefined
+    currentPage > 1 ? `${basePath}?page=${currentPage - 1}` : undefined;
   const next =
     currentPage < totalPages
       ? `${basePath}?page=${currentPage + 1}`
-      : undefined
-  const pagination: Metadata['pagination'] = {}
+      : undefined;
+  const pagination: Metadata["pagination"] = {};
 
   if (previous) {
-    pagination.previous = previous
+    pagination.previous = previous;
   }
   if (next) {
-    pagination.next = next
+    pagination.next = next;
   }
 
-  return {
+  // Add noindex for pages beyond the first few to avoid thin content
+  const shouldNoIndex = currentPage > 3;
+  const metadata: Metadata = {
     ...baseMetadata,
     alternates: {
       canonical:
         currentPage === 1 ? basePath : `${basePath}?page=${currentPage}`,
     },
     ...(Object.keys(pagination).length > 0 ? { pagination } : {}),
-  }
+    ...(shouldNoIndex
+      ? {
+          robots: {
+            index: false,
+            follow: true,
+            googleBot: {
+              index: false,
+              follow: true,
+            },
+          },
+        }
+      : {}),
+  };
+
+  return metadata;
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
-  const cookieStore = await cookies()
-  const language = cookieStore.get('onwalk.language')?.value || 'zh'
+  const cookieStore = await cookies();
+  const language = cookieStore.get("onwalk.language")?.value || "zh";
 
-  const allPosts = await getContent('blog')
-  const posts = filterPostsByLanguage(allPosts, language)
+  const allPosts = await getContent("blog");
+  const posts = filterPostsByLanguage(allPosts, language);
+  const categories = await getBlogCategories();
 
-  const { currentPage } = await resolvePagination(searchParams, posts.length)
+  const { currentPage } = await resolvePagination(searchParams, posts.length);
 
   // Calculate start index based on variable page size
-  let startIndex = 0
-  let pageSize = HERO_PAGE_SIZE
+  let startIndex = 0;
+  let pageSize = HERO_PAGE_SIZE;
 
   if (currentPage > 1) {
-    startIndex = HERO_PAGE_SIZE + (currentPage - 2) * STD_PAGE_SIZE
-    pageSize = STD_PAGE_SIZE
+    startIndex = HERO_PAGE_SIZE + (currentPage - 2) * STD_PAGE_SIZE;
+    pageSize = STD_PAGE_SIZE;
   }
 
-  const pagedPosts = posts.slice(startIndex, startIndex + pageSize)
+  const pagedPosts = posts.slice(startIndex, startIndex + pageSize);
 
   // Determine Hero post logic
-  const showHero = currentPage === 1 && pagedPosts.length > 0
-  const heroPost = showHero ? pagedPosts[0] : null
-  const gridPosts = showHero ? pagedPosts.slice(1) : pagedPosts
+  const showHero = currentPage === 1 && pagedPosts.length > 0;
+  const heroPost = showHero ? pagedPosts[0] : null;
+  const gridPosts = showHero ? pagedPosts.slice(1) : pagedPosts;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
       <main className="mx-auto w-full max-w-6xl px-6 pb-20">
-        <BreadcrumbJsonLd items={[
-          { name: 'Home', path: '/' },
-          { name: 'Blogs', path: '/blogs' }
-        ]} />
-        <BlogHeader variant="overview" activeHref="/blogs" />
+        <BreadcrumbJsonLd
+          items={[
+            { name: "Home", path: "/" },
+            { name: "Blogs", path: "/blogs" },
+          ]}
+        />
+        <BlogHeader
+          variant="overview"
+          activeHref="/blogs"
+          categories={categories}
+        />
 
         <div className="space-y-12">
           {/* Unified List with Client Interactivity */}
@@ -132,5 +169,5 @@ export default async function BlogPage({ searchParams }: PageProps) {
       </main>
       <SiteFooter />
     </div>
-  )
+  );
 }
