@@ -34,8 +34,8 @@ const sections: ContentSection[] = [
   {
     folder: "videos",
     route: "videos", // Points to the Next.js page at /videos/[slug]
-    changeFrequency: "monthly",
-    priority: 0.6,
+    changeFrequency: "weekly",
+    priority: 0.8,
     isMedia: true,
     mediaKind: "videos",
   },
@@ -59,8 +59,8 @@ const indexEntries: MetadataRoute.Sitemap = [
   },
   {
     url: `${baseUrl}/videos`,
-    changeFrequency: "monthly",
-    priority: 0.8,
+    changeFrequency: "weekly",
+    priority: 0.9,
   },
 ];
 
