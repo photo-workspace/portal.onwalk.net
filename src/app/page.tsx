@@ -19,9 +19,8 @@ import HomeSectionHeader from '@/components/onwalk/HomeSectionHeader'
 import { getContent, sortContentByDate, filterPostsByLanguage } from '@/lib/content'
 import { getLatestPublicImages, getLatestPublicVideos } from '@/lib/publicMedia'
 
-// Disable all caching to ensure fresh content on every request
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// Enable caching with revalidation
+export const revalidate = 60
 
 export default async function HomePage() {
   const cookieStore = await cookies()
@@ -38,7 +37,7 @@ export default async function HomePage() {
     <div className="relative min-h-screen bg-background text-text transition-colors duration-300">
       <SiteHeader />
       <main className="relative mx-auto flex w-full max-w-7xl flex-col gap-16 px-6 pb-24">
-        <HomeHero />
+        <HomeHero language={language} />
 
         <section className="space-y-6">
           <HomeSectionHeader section="image" />

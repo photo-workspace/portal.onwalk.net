@@ -1,6 +1,6 @@
 'use client'
 
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import type { ContentItem } from '@/lib/content'
@@ -21,14 +21,13 @@ export default function ImageCarousel({ items }: { items: ContentItem[] }) {
             onClick={() => setSelectedItem(item)}
           >
             {item.cover ? (
-              <img
+              <Image
                 src={item.cover}
                 alt={item.title ?? item.slug}
-                width={900}
-                height={1200}
+                width={450}
+                height={600}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
+                sizes="(max-width: 768px) 75vw, 300px" // Adjusted sizes for carousel items
               />
             ) : (
               <div className={`h-full w-full bg-gradient-to-br ${item.tone ?? 'from-slate-200 via-slate-100 to-slate-50'}`} />

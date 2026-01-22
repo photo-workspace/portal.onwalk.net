@@ -1,20 +1,8 @@
-"use client";
+import { onwalkCopy } from "@/i18n/onwalk";
+import type { Language } from "@/i18n/language";
 
-import { useEffect, useState } from "react";
-import { useOnwalkCopy } from "@/i18n/useOnwalkCopy";
-
-export default function HomeHero() {
-  const copy = useOnwalkCopy();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Prevent hydration mismatch by only rendering on client
-  if (!isMounted) {
-    return null;
-  }
+export default function HomeHero({ language }: { language: string }) {
+  const copy = onwalkCopy[language as Language] || onwalkCopy.zh;
 
   return (
     <section className="grid gap-8 rounded-large border border-border bg-surface p-10 shadow-sm transition-colors duration-300">

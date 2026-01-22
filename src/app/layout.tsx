@@ -6,6 +6,14 @@ import Script from 'next/script'
 import { Analytics as GoogleAnalytics } from './Analytics'
 import { onwalkSeoDescription, onwalkSeoTitle } from '@/lib/seo'
 import { VercelAnalyticsClient } from './vercel-analytics-client'
+import { Roboto } from 'next/font/google'
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist-sans', // Reuse existing tailwind variable
+})
 
 const enableVercelAnalytics =
   process.env.NEXT_PUBLIC_VERCEL_ANALYTICS === '1'
@@ -26,12 +34,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html {...htmlAttributes}>
+    <html {...htmlAttributes} className={`${roboto.variable}`}>
       <head>
         {/* Google Fonts & Icons */}
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link href="https://fonts.gstatic.com" rel="preconnect" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+        {/* Product Sans (Custom) & Material Icons */}
+        <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
         {/* Google Analytics 4 */}
