@@ -199,8 +199,8 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
     },
     image: {
       eyebrow: '瞬间',
-      title: '以影像为入口的单页阅读',
-      subtitle: '每一张照片对应一段文字，让图像延续成叙事。',
+      title: '瞬息与永恒',
+      subtitle: '在时间的缝隙里，截取光影的切片。',
       copyMarkdown: '复制 Markdown 链接',
       markdownCopied: 'Markdown 链接已复制',
     },
@@ -308,8 +308,8 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
     },
     image: {
       eyebrow: 'Moments',
-      title: 'Single-page reading led by images',
-      subtitle: 'Each photo pairs with a passage so images carry on the narrative.',
+      title: 'Moments & Eternity',
+      subtitle: 'Capturing slices of light in the crevices of time.',
       copyMarkdown: 'Copy Markdown Link',
       markdownCopied: 'Markdown Link Copied',
     },
