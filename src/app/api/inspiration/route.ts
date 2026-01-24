@@ -41,7 +41,9 @@ function getRandomTheme(): ThemeDefinition {
 }
 
 export async function GET() {
-    const apiKey = process.env.OPENAI_API_KEY
+    // Config: Forces local mode by ignoring API Key for now
+    const ENABLE_AI = false
+    const apiKey = ENABLE_AI ? process.env.OPENAI_API_KEY : null
 
     // 1. Fetch and randomize media (Server-side)
     const [allImages, allVideos] = await Promise.all([
