@@ -117,8 +117,8 @@ export async function rewrites() {
   return [
     // Media asset proxies to CDN
     {
-      source: '/videos/:path*',
-      destination: 'https://assets.onwalk.net/videos/:path*',
+      source: '/videos/:path(.+\\.(?:mp4|mov|webm|MP4|MOV|WEBM|avi|AVI))',
+      destination: 'https://assets.onwalk.net/videos/:path',
     },
     {
       source: '/image/:path*',

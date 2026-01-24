@@ -161,11 +161,10 @@ export default function VideoGrid({
                   ? copy.video.markdownCopied
                   : copy.video.copyMarkdown
               }
-              className={`absolute right-3 top-3 z-10 hidden items-center justify-center rounded-full p-2 text-white backdrop-blur-md transition group-hover:flex ${
-                copiedKey === item.slug
+              className={`absolute right-3 top-3 z-10 hidden items-center justify-center rounded-full p-2 text-white backdrop-blur-md transition group-hover:flex ${copiedKey === item.slug
                   ? "bg-green-500/80 hover:bg-green-600/90"
                   : "bg-black/50 hover:bg-black/70"
-              }`}
+                }`}
             >
               {copiedKey === item.slug ? (
                 <svg
@@ -251,8 +250,9 @@ export default function VideoGrid({
             </div>
             <div className="space-y-1 p-4">
               <Link
-                href="/videos"
+                href={`/videos/${item.slug}`}
                 className="text-lg font-bold text-heading hover:text-primary transition-colors"
+                title={item.title ?? item.slug}
               >
                 {item.title ?? item.slug}
               </Link>
@@ -305,11 +305,10 @@ export default function VideoGrid({
       )}
       {/* Toast Notification */}
       <div
-        className={`fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 shadow-lg backdrop-blur transition-all duration-300 ${
-          copiedKey
+        className={`fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 shadow-lg backdrop-blur transition-all duration-300 ${copiedKey
             ? "translate-y-0 opacity-100"
             : "translate-y-4 opacity-0 pointer-events-none"
-        }`}
+          }`}
       >
         {copy.video.markdownCopied}
       </div>
