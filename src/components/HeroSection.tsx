@@ -22,7 +22,7 @@ export default function HeroSection({
     onDevelop,
 }: HeroSectionProps) {
     return (
-        <section className="grid gap-8 rounded-large border border-border bg-surface p-10 shadow-sm transition-colors duration-300 relative overflow-hidden">
+        <section className="grid gap-8 rounded-large border border-border bg-surface p-6 md:p-10 shadow-sm transition-colors duration-300 relative overflow-hidden">
             <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-text-secondary">
                 <span className="rounded-full border border-border px-3 py-1">
                     {badge}
@@ -32,13 +32,13 @@ export default function HeroSection({
 
             <div className="space-y-4">
                 <h1
-                    className={`font-display text-4xl font-bold tracking-tight text-heading md:text-5xl transition-all duration-700 ease-in-out ${isBlurring ? 'blur-md opacity-60 grayscale' : 'blur-0 opacity-100 grayscale-0'
+                    className={`font-display text-3xl md:text-5xl font-bold tracking-tight text-heading transition-all duration-700 ease-in-out ${isBlurring ? 'blur-md opacity-60 grayscale' : 'blur-0 opacity-100 grayscale-0'
                         }`}
                 >
                     {title}
                 </h1>
                 <p
-                    className={`max-w-2xl text-lg leading-relaxed text-text-secondary transition-all duration-700 ease-in-out ${isBlurring ? 'blur-sm opacity-60' : 'blur-0 opacity-100'
+                    className={`max-w-2xl text-base md:text-lg leading-relaxed text-text-secondary transition-all duration-700 ease-in-out ${isBlurring ? 'blur-sm opacity-60' : 'blur-0 opacity-100'
                         }`}
                 >
                     {subtitle}
@@ -49,7 +49,7 @@ export default function HeroSection({
                 <button
                     onClick={onDevelop}
                     disabled={isLoading}
-                    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-text transition-all hover:border-text hover:bg-text hover:text-background disabled:cursor-not-allowed disabled:opacity-50"
+                    className="group relative inline-flex w-full md:w-auto justify-center items-center gap-2 overflow-hidden rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-text transition-all hover:border-text hover:bg-text hover:text-background disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     <span className={`relative flex h-2 w-2`}>
                         <span className={`absolute inline-flex h-full w-full rounded-full bg-brand opacity-75 ${isLoading ? 'animate-ping' : ''}`}></span>

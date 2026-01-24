@@ -21,6 +21,23 @@ const enableVercelAnalytics =
 export const metadata = {
   title: onwalkSeoTitle,
   description: onwalkSeoDescription,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Onwalk',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: 'black', // Or dynamic based on theme, but black is safer for photo apps
 }
 
 const GA_ID = 'G-P0FR8RGH87'

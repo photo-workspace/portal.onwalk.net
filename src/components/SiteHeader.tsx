@@ -49,8 +49,8 @@ export default function SiteHeader() {
               type="button"
               onClick={() => handleLanguageChange('en')}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${language === 'en'
-                  ? 'bg-surface text-heading shadow-sm ring-1 ring-border'
-                  : 'text-text-secondary hover:text-text'
+                ? 'bg-surface text-heading shadow-sm ring-1 ring-border'
+                : 'text-text-secondary hover:text-text'
                 }`}
             >
               EN
@@ -59,14 +59,28 @@ export default function SiteHeader() {
               type="button"
               onClick={() => handleLanguageChange('zh')}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${language === 'zh'
-                  ? 'bg-surface text-heading shadow-sm ring-1 ring-border'
-                  : 'text-text-secondary hover:text-text'
+                ? 'bg-surface text-heading shadow-sm ring-1 ring-border'
+                : 'text-text-secondary hover:text-text'
                 }`}
             >
               中文
             </button>
           </div>
         </div>
+      </div>
+      <div className="md:hidden w-full overflow-x-auto pb-0 -mt-1 scrollbar-hide">
+        <nav className="flex items-center gap-6 px-6 h-12 text-sm font-medium whitespace-nowrap">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              prefetch={item.prefetch}
+              className="text-text-secondary transition-colors hover:text-primary active:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </header>
   )

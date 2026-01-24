@@ -147,7 +147,7 @@ export default function VideoGrid({
       )}
 
       <div
-        className={`grid gap-6 ${columns === 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}
+        className={`grid gap-4 md:gap-6 ${columns === 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2"}`}
       >
         {currentItems.map((item) => (
           <div
@@ -162,8 +162,8 @@ export default function VideoGrid({
                   : copy.video.copyMarkdown
               }
               className={`absolute right-3 top-3 z-10 hidden items-center justify-center rounded-full p-2 text-white backdrop-blur-md transition group-hover:flex ${copiedKey === item.slug
-                  ? "bg-green-500/80 hover:bg-green-600/90"
-                  : "bg-black/50 hover:bg-black/70"
+                ? "bg-green-500/80 hover:bg-green-600/90"
+                : "bg-black/50 hover:bg-black/70"
                 }`}
             >
               {copiedKey === item.slug ? (
@@ -306,8 +306,8 @@ export default function VideoGrid({
       {/* Toast Notification */}
       <div
         className={`fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-900 shadow-lg backdrop-blur transition-all duration-300 ${copiedKey
-            ? "translate-y-0 opacity-100"
-            : "translate-y-4 opacity-0 pointer-events-none"
+          ? "translate-y-0 opacity-100"
+          : "translate-y-4 opacity-0 pointer-events-none"
           }`}
       >
         {copy.video.markdownCopied}
