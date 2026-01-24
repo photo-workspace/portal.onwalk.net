@@ -8,7 +8,7 @@ import { useState, useMemo } from "react";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import PageHeader from "@/components/onwalk/PageHeader";
-import type { ContentItem } from "@/lib/content";
+import type { ContentItem } from "@/lib/types";
 import { useOnwalkCopy } from "@/i18n/useOnwalkCopy";
 import { copyToClipboard } from "@/lib/clipboard";
 import MediaDetailModal from "@/components/MediaDetailModal";

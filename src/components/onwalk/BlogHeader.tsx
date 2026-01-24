@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useOnwalkCopy } from "@/i18n/useOnwalkCopy";
-import { type BlogCategory } from "@/lib/content";
+import { type BlogCategory } from "@/lib/types";
 
 type BlogHeaderVariant = "overview" | "tracks" | "city" | "scenery";
 
@@ -37,23 +37,23 @@ export default function BlogHeader({
   const navItems =
     categories && categories.length > 0
       ? categories.map((cat) => ({
-          label: cat.title,
-          href: `/blogs/${cat.key}`,
-          count: cat.count,
-        }))
+        label: cat.title,
+        href: `/blogs/${cat.key}`,
+        count: cat.count,
+      }))
       : [
-          {
-            label: copy.blog.categories.tracks,
-            href: "/blogs/Tracks",
-            count: 0,
-          },
-          { label: copy.blog.categories.city, href: "/blogs/City", count: 0 },
-          {
-            label: copy.blog.categories.scenery,
-            href: "/blogs/Scenery",
-            count: 0,
-          },
-        ];
+        {
+          label: copy.blog.categories.tracks,
+          href: "/blogs/Tracks",
+          count: 0,
+        },
+        { label: copy.blog.categories.city, href: "/blogs/City", count: 0 },
+        {
+          label: copy.blog.categories.scenery,
+          href: "/blogs/Scenery",
+          count: 0,
+        },
+      ];
 
   return (
     <header className="space-y-4 pb-10">
@@ -69,11 +69,10 @@ export default function BlogHeader({
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-full px-4 py-2 transition ${
-                isActive
+              className={`rounded-full px-4 py-2 transition ${isActive
                   ? "bg-slate-900 text-white"
                   : "border border-slate-200 bg-white hover:bg-slate-50"
-              }`}
+                }`}
             >
               {item.label}
               {item.count > 0 && (

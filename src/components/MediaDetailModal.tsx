@@ -12,7 +12,7 @@ import {
   AlignVerticalJustifyCenter,
 } from "lucide-react";
 import { marked } from "marked";
-import type { ContentItem } from "@/lib/content";
+import type { ContentItem } from "@/lib/types";
 
 type LayoutMode = "side" | "stacked";
 
@@ -140,24 +140,22 @@ export default function MediaDetailModal({
       <div
         key={item.slug}
         className={`relative flex animate-magazine max-h-[95vh] max-w-[95vw] shadow-2xl transition-all duration-500 overflow-hidden rounded-2xl bg-white
-          ${
-            layout === "side"
-              ? "h-[90vh] w-[95vw] flex-row"
-              : "h-[95vh] w-[80vw] flex-col"
+          ${layout === "side"
+            ? "h-[90vh] w-[95vw] flex-row"
+            : "h-[95vh] w-[80vw] flex-col"
           }`}
       >
         {/* Media Section */}
         <div
           className={`relative flex items-center justify-center bg-black transition-all duration-500
-          ${
-            layout === "side"
+          ${layout === "side"
               ? isTextCollapsed
                 ? "w-full"
                 : "w-2/3"
               : isTextCollapsed
                 ? "h-full"
                 : "h-2/3"
-          }`}
+            }`}
         >
           {type === "video" ? (
             <video
@@ -212,15 +210,14 @@ export default function MediaDetailModal({
         {/* Content Section */}
         <div
           className={`relative flex flex-col bg-white overflow-hidden transition-all duration-500
-          ${
-            layout === "side"
+          ${layout === "side"
               ? isTextCollapsed
                 ? "w-0 opacity-0"
                 : "w-1/3 opacity-100 border-l border-slate-100"
               : isTextCollapsed
                 ? "h-0 opacity-0"
                 : "h-1/3 opacity-100 border-t border-slate-100"
-          }`}
+            }`}
         >
           <div className="h-full overflow-y-auto px-8 py-10">
             <div className="mb-8 border-b border-slate-100 pb-6">

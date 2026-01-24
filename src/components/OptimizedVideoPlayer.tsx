@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ContentItem } from "@/lib/content";
+import { ContentItem } from "@/lib/types";
 
 type OptimizedVideoPlayerProps = {
   video: ContentItem;

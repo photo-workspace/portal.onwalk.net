@@ -1,4 +1,4 @@
-import type { ContentItem } from "@/lib/content";
+import type { ContentItem } from "@/lib/types";
 import { listMediaItems } from "@/lib/mediaListing";
 
 /**

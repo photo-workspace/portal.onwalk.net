@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { useOnwalkCopy } from "@/i18n/useOnwalkCopy";
-import type { ContentItem } from "@/lib/content";
+import type { ContentItem } from "@/lib/types";
 import { copyToClipboard } from "@/lib/clipboard";
 import MediaDetailModal from "./MediaDetailModal";
 

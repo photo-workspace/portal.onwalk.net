@@ -1,4 +1,4 @@
-import { ContentItem } from "@/lib/content";
+import { ContentItem } from "@/lib/types";
 
 type VideoJsonLdProps = {
   video: ContentItem;

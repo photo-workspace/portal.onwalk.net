@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import type { ContentItem } from '@/lib/content'
+import type { ContentItem } from '@/lib/types'
 
 export type MediaKind = 'images' | 'videos'
 export type MediaSort = 'latest' | 'name'
