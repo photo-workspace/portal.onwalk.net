@@ -93,17 +93,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             type: "video/mp4",
           }]
           : [],
-        images: video.poster
-          ? [{
-            url: video.poster,
-            width: 1280,
-            height: 720,
-            alt: title,
-          }]
-          : [],
+        images: [`/api/og?type=video&slug=${encodeURIComponent(fullPath)}`],
         url: `https://www.onwalk.net/videos/${fullPath}`,
         siteName: "Onwalk",
         locale: "zh_CN",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${title} | Onwalk`,
+        description: video.location
+          ? `在${Array.isArray(video.location) ? video.location.join("、") : video.location}拍摄的精美视频。`
+          : `精美的户外航拍视频内容。`,
+        images: [`/api/og?type=video&slug=${encodeURIComponent(fullPath)}`],
       },
       robots: {
         index: true,

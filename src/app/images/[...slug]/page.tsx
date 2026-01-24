@@ -21,12 +21,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: exactMatch.location
                 ? (Array.isArray(exactMatch.location) ? exactMatch.location.join(', ') : exactMatch.location)
                 : `Image: ${exactMatch.title}`,
+            openGraph: {
+                images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
+            },
+            twitter: {
+                card: 'summary_large_image',
+                images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
+            },
         }
     }
 
     return {
         title: 'Images | Onwalk',
         description: 'Browse our collection of images.',
+        openGraph: {
+            images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
+        },
     }
 }
 

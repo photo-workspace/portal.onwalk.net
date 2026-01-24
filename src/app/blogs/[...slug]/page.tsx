@@ -120,11 +120,13 @@ export async function generateMetadata({
         siteName: "Onwalk",
         locale: "zh_CN",
         type: "website",
+        images: [`/api/og?type=blog&slug=${encodeURIComponent(slugPath)}`],
       },
       twitter: {
         card: "summary_large_image",
         title: `${categoryInfo.title} | Onwalk`,
         description: categoryInfo.description,
+        images: [`/api/og?type=blog&slug=${encodeURIComponent(slugPath)}`],
       },
     };
   }
@@ -158,28 +160,13 @@ export async function generateMetadata({
       siteName: "Onwalk",
       locale: "zh_CN",
       type: "article",
-      ...(post.cover
-        ? {
-            images: [
-              {
-                url: `${baseUrl}${post.cover}`,
-                width: 1200,
-                height: 800,
-                alt: post.title ?? post.slug,
-              },
-            ],
-          }
-        : {}),
+      images: [`/api/og?type=blog&slug=${encodeURIComponent(slugPath)}`],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title ?? "笔记",
       description: getDescriptionText(post),
-      ...(post.cover
-        ? {
-            images: [`${baseUrl}${post.cover}`],
-          }
-        : {}),
+      images: [`/api/og?type=blog&slug=${encodeURIComponent(slugPath)}`],
     },
     other: {
       "article:published_time": post.date || "",
