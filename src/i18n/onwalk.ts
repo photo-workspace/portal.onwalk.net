@@ -242,8 +242,8 @@ export const onwalkCopy: Record<Language, OnwalkCopy> = {
       hero: {
         badge: 'Index',
         tagline: 'Images as the entry · Words as the structure',
-        title: 'View & World',
-        description: 'Capturing the eternal dance of shadow and light, making the transient moment truly immortal.',
+        title: 'Vision & World',
+        description: 'Capturing the eternal dance of light and shadow, making the transient moment truly immortal.',
         chips: {
           featured: 'Image Collection',
           moments: 'Moments',
