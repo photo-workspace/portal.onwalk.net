@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export const alt = 'Onwalk — Walking with a Camera'
 export const size = {
