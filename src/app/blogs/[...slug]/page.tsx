@@ -15,6 +15,7 @@ import {
   type BlogCategory,
 } from "@/lib/content";
 import { BreadcrumbJsonLd } from "@/components/BreadcrumbJsonLd";
+import { Breadcrumb, type BreadcrumbItem } from "@/components/Breadcrumb";
 import { renderMarkdownContent } from "@/server/render-markdown";
 
 type PageProps = {
@@ -25,13 +26,40 @@ const DESCRIPTION_MIN = 120;
 const DESCRIPTION_MAX = 160;
 
 // Get category information dynamically
-async function getCategoryInfo(slugPath: string): Promise<BlogCategory | null> {
+async function getBlogCategoryInfo(slugPath: string): Promise<BlogCategory | null> {
   const categories = await getBlogCategories();
   return categories.find((cat) => cat.key === slugPath) || null;
 }
 
 function normalizeSlug(slugParam: string | string[]) {
   return Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
+}
+
+function generateBlogBreadcrumbs(
+  categoryInfo?: BlogCategory,
+  postTitle?: string
+): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [
+    { name: "首页", path: "/" },
+    { name: "笔记", path: "/blogs" },
+  ];
+
+  if (categoryInfo) {
+    items.push({
+      name: categoryInfo.title,
+      path: `/blogs/${categoryInfo.key}`,
+    });
+  }
+
+  if (postTitle) {
+    // Current page, no path needed
+    items.push({
+      name: postTitle,
+      path: "", // Will be current page
+    });
+  }
+
+  return items;
 }
 
 function markdownToPlainText(markdown: string) {
@@ -103,7 +131,7 @@ export async function generateMetadata({
   const slugPath = normalizeSlug((await params).slug);
 
   // Check if this is a category page
-  const categoryInfo = await getCategoryInfo(slugPath);
+  const categoryInfo = await getBlogCategoryInfo(slugPath);
 
   if (categoryInfo) {
     // This is a category page
@@ -185,23 +213,26 @@ export default async function BlogSlugPage({ params }: PageProps) {
   const language = cookieStore.get("onwalk.language")?.value || "zh";
 
   // Check if this is a category page
-  const categoryInfo = await getCategoryInfo(slugPath);
+  const blogCategoryInfo = await getBlogCategoryInfo(slugPath);
 
-  if (categoryInfo) {
+  if (blogCategoryInfo) {
     // This is a category page - render posts in this category
     const categoryPosts = await getPostsByCategory(slugPath);
     const allCategories = await getBlogCategories();
 
     // Update category count from actual posts
     const updatedCategoryInfo = {
-      ...categoryInfo,
+      ...blogCategoryInfo,
       count: categoryPosts.length,
     };
+
+    const breadcrumbs = generateBlogBreadcrumbs(updatedCategoryInfo);
 
     return (
       <div className="min-h-screen bg-slate-50 text-slate-900">
         <SiteHeader />
         <main className="mx-auto w-full max-w-6xl px-6 pb-20">
+          <Breadcrumb items={breadcrumbs} />
           <BreadcrumbJsonLd
             items={[
               { name: "Home", path: "/" },
@@ -310,6 +341,15 @@ export default async function BlogSlugPage({ params }: PageProps) {
   const canonicalUrl = `${baseUrl}/blogs/${slugPath}`;
   const imageUrl = post.cover ? `${baseUrl}${post.cover}` : undefined;
   const description = post.content?.slice(0, 160);
+
+  // Get category info for breadcrumbs
+  const categories = await getBlogCategories();
+  const categoryInfo = post.category
+    ? categories.find(cat => cat.key === post.category)
+    : undefined;
+
+  const breadcrumbs = generateBlogBreadcrumbs(categoryInfo, post.title ?? "笔记");
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -329,6 +369,7 @@ export default async function BlogSlugPage({ params }: PageProps) {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <SiteHeader />
       <main className="mx-auto w-full max-w-3xl px-6 pb-20">
+        <Breadcrumb items={breadcrumbs} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -2,9 +2,40 @@ import ImagesGallery from '../ImagesGallery'
 import { getImageItems, paginateImages } from '../image-data'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Breadcrumb, BreadcrumbItem } from '@/components/Breadcrumb'
+import SiteHeader from '@/components/SiteHeader'
+import SiteFooter from '@/components/SiteFooter'
 
 type Props = {
     params: Promise<{ slug: string[] }>
+}
+
+function generateImageBreadcrumbs(slugSegments: string[], isExactMatch: boolean = false): BreadcrumbItem[] {
+    const items: BreadcrumbItem[] = [
+        { name: '首页', path: '/' },
+        { name: '瞬间', path: '/images' },
+    ]
+
+    let currentPath = '/images'
+    const segments = isExactMatch ? slugSegments.slice(0, -1) : slugSegments
+
+    segments.forEach((segment) => {
+        currentPath += `/${segment}`
+        // Capitalize first letter for display
+        const name = segment.charAt(0).toUpperCase() + segment.slice(1)
+        items.push({
+            name,
+            path: currentPath,
+        })
+    })
+
+    return items
+}
+
+function getDirectoryTitle(slugSegments: string[]): string {
+    if (slugSegments.length === 0) return 'Images'
+    const lastSegment = slugSegments[slugSegments.length - 1]
+    return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1)
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -21,6 +52,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: exactMatch.location
                 ? (Array.isArray(exactMatch.location) ? exactMatch.location.join(', ') : exactMatch.location)
                 : `Image: ${exactMatch.title}`,
+            alternates: {
+                canonical: `/images/${pathStr}`,
+            },
             openGraph: {
                 images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
             },
@@ -35,10 +69,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
     }
 
+    // This is a directory/category page
+    const directoryTitle = getDirectoryTitle(slug)
     return {
-        title: 'Images | Onwalk',
-        description: 'Browse our collection of images.',
+        title: `${directoryTitle} - 瞬间 | Onwalk`,
+        description: `Browse images in ${directoryTitle} category.`,
+        alternates: {
+            canonical: `/images/${pathStr}`,
+        },
         openGraph: {
+            title: `${directoryTitle} - 瞬间 | Onwalk`,
+            description: `Browse images in ${directoryTitle} category.`,
             images: [`/api/og?type=image&slug=${encodeURIComponent(pathStr)}`],
         },
         twitter: {
@@ -133,10 +174,8 @@ export default async function ImagesDataPage({
         filteredItems = items.filter(i => i.slug.startsWith(categoryPath + '/') || i.slug === categoryPath)
         // (include exact match if it was a folder?? No, slug is clean file path.)
 
-        if (filteredItems.length === 0) {
-            // If no items found, 404
-            notFound()
-        }
+        // Allow empty directories to be shown with breadcrumbs
+        // Don't 404 on empty directories
     }
 
     // 3. Paginate
@@ -145,13 +184,31 @@ export default async function ImagesDataPage({
         Number.isNaN(pageNumber) ? 1 : pageNumber,
     )
 
+    const breadcrumbs = generateImageBreadcrumbs(slug, !!exactMatch)
+    const directoryTitle = getDirectoryTitle(exactMatch ? slug.slice(0, -1) : slug)
+
     return (
-        <ImagesGallery
-            items={pagedItems}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalImages={totalImages}
-            initialSlug={initialSlug}
-        />
+        <div className="min-h-screen bg-slate-50 text-slate-900">
+            <SiteHeader />
+            <main className="mx-auto w-full max-w-7xl px-6 pb-20">
+                <Breadcrumb items={breadcrumbs} />
+
+                {filteredItems.length === 0 ? (
+                    <div className="mt-8">
+                        <h1 className="text-3xl font-bold text-slate-900 mb-4">{directoryTitle}</h1>
+                        <p className="text-slate-500">此目录暂无内容。</p>
+                    </div>
+                ) : (
+                    <ImagesGallery
+                        items={pagedItems}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        totalImages={totalImages}
+                        initialSlug={initialSlug}
+                    />
+                )}
+            </main>
+            <SiteFooter />
+        </div>
     )
 }
