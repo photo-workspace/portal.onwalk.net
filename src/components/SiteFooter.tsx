@@ -27,7 +27,7 @@ export default function SiteFooter() {
   ]
 
   return (
-    <footer className="mx-auto w-full max-w-7xl px-6 pb-16 pt-16 text-sm text-text-muted transition-colors duration-300">
+    <footer className="hidden md:block mx-auto w-full max-w-7xl px-6 pb-16 pt-16 text-sm text-text-muted transition-colors duration-300">
       <div className="flex flex-col gap-6 border-t border-border pt-6">
         <div className="flex flex-wrap items-center justify-center gap-4">
           {socials.map((item) => {

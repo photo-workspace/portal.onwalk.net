@@ -2,6 +2,8 @@ import './globals.css'
 import { Suspense } from 'react'
 import { AppProviders } from './AppProviders'
 import { ThemeToggle } from '@/components/theme'
+import MobileHeader from '@/components/MobileHeader'
+import MobileFooter from '@/components/MobileFooter'
 import Script from 'next/script'
 import { Analytics as GoogleAnalytics } from './Analytics'
 import { onwalkSeoDescription, onwalkSeoTitle } from '@/lib/seo'
@@ -61,7 +63,8 @@ export default function RootLayout({
         </Script>
       </head>
 
-      <body className={bodyClassName}>
+      <body className={`${bodyClassName} pb-16 md:pb-0`}>
+        <MobileHeader />
         {/* SPA 路由级 page_view */}
         <GoogleAnalytics />
 
@@ -73,6 +76,7 @@ export default function RootLayout({
         </Suspense>
 
         <VercelAnalyticsClient enabled={enableVercelAnalytics} />
+        <MobileFooter />
       </body>
     </html>
   )

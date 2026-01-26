@@ -24,7 +24,7 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md transition-colors duration-300">
+    <header className="hidden md:flex sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md transition-colors duration-300">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight text-heading">
           <span className="material-symbols-outlined text-primary">photo_camera</span>

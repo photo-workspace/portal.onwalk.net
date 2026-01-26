@@ -108,16 +108,20 @@ export default function HomeInteractiveWrapper({
 
             <section className={`space-y-6 transition-opacity duration-700 ${isBlurring ? 'opacity-80' : 'opacity-100'}`}>
                 <HomeSectionHeader section="image" />
-                <div className="rounded-large border border-border bg-surface p-6 shadow-sm min-h-[400px]">
-                    {/* min-h to prevent layout shift during load if empty */}
+                <div className="rounded-large border border-border bg-surface p-4 md:p-6 shadow-sm min-h-[300px] md:min-h-[400px]">
                     <ImageCarousel items={images} />
                 </div>
             </section>
 
             <section className={`space-y-6 transition-opacity duration-700 ${isBlurring ? 'opacity-80' : 'opacity-100'}`}>
                 <HomeSectionHeader section="video" />
-                <div className="rounded-large border border-border bg-surface p-6 shadow-sm min-h-[400px]">
-                    <VideoGrid items={videos} columns={3} />
+                <div className="rounded-large border border-border bg-surface p-4 md:p-6 shadow-sm min-h-[300px] md:min-h-[400px]">
+                    <div className="hidden md:block">
+                        <VideoGrid items={videos} columns={3} />
+                    </div>
+                    <div className="block md:hidden">
+                        <VideoGrid items={videos} columns={2} />
+                    </div>
                 </div>
                 <div className="flex">
                     <Link
@@ -131,7 +135,7 @@ export default function HomeInteractiveWrapper({
 
             <section className="space-y-6">
                 <HomeSectionHeader section="blog" />
-                <div className="rounded-large border border-border bg-surface p-6 shadow-sm">
+                <div className="rounded-large border border-border bg-surface p-4 md:p-6 shadow-sm">
                     <MasonryGrid posts={latestBlogs} />
                 </div>
             </section>

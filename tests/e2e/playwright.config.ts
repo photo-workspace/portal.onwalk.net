@@ -23,13 +23,14 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `yarn dev --hostname 127.0.0.1 --port ${PORT}`,
+    command: `yarn dev:raw --hostname 127.0.0.1 --port ${PORT}`,
     url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
       NEXT_TELEMETRY_DISABLED: '1',
       NODE_ENV: process.env.NODE_ENV ?? 'development',
+      NEXT_PUBLIC_MEDIA_BASE_URL: 'http://localhost:9000',
     },
   },
 })
